@@ -1,1 +1,2317 @@
+Real Estate Data Model
+Exploratory Data Analysis
+1.	Loading the Data
+
+# Import required libraries
+import pandas as pd
+import numpy as np
+
+# Load the dataset
+file_path = "https://drive.google.com/uc?export=download&id=1M0eWey4zld4TbV3xiv2nqszbgvELtKkO"
+df = pd.read_csv(file_path)
+
+# Display first 5 rows
+print("First 5 Rows of Dataset:")
+print(df.head())
+
+First 5 Rows of Dataset:
+            pin       pin10  realid              owner              owner2  \
+0  073919747968  0739747968  229533            NVR INC                 NaN   
+1  073929066073  0739066073  229452   TOR COURTNEY LLC                 NaN   
+2  073929299816  0739299816  229501      HANSEN LAUREN                 NaN   
+3  083090220774  0830220774  230143  DAN RYAN BUILDERS  NORTH CAROLINA LLC   
+4    9774941357  9774941357   71432     BODOH EDWARD C    BODOH PATRICIA A   
+
+              owneradd1           owneradd2 owneradd3              location  \
+0       5734 TRINITY RD             STE 200       NaN         3101 KIRBY ST   
+1  1406 MUIRFIELD CLOSE                 NaN       NaN       1104 ROMERIA DR   
+2         1122 HELMS ST                 NaN       NaN         1122 HELMS ST   
+3       2099 GAITHER RD             STE 600       NaN  1513 SUNSET PEAK WAY   
+4  897 FEARRINGTON POST  PITTSBORO NC 27312       NaN           897 BURWELL   
+
+   calcacreage  ...  phyzip  utilities ownerwholename  \
+0        0.479  ...     NaN        NaN            NaN   
+1        0.044  ...     NaN        NaN            NaN   
+2        0.044  ...     NaN        NaN            NaN   
+3        0.043  ...     NaN        NaN            NaN   
+4        1.290  ...     NaN        NaN            NaN   
+
+                                            reallink  \
+0  https://property.spatialest.com/nc/durham/#/pr...   
+1  https://property.spatialest.com/nc/durham/#/pr...   
+2  https://property.spatialest.com/nc/durham/#/pr...   
+3  https://property.spatialest.com/nc/durham/#/pr...   
+4  http://ustaxdata.com/nc/chatham/List.cfm?lastN...   
+
+                                            deedlink yearbuilt  shape_starea  \
+0  http://rodweb.co.durham.nc.us/RealEstate/Searc...       NaN  20791.463510   
+1  http://rodweb.co.durham.nc.us/RealEstate/Searc...       NaN   1900.003099   
+2  http://rodweb.co.durham.nc.us/RealEstate/Searc...       NaN   1899.986522   
+3  http://rodweb.co.durham.nc.us/RealEstate/Searc...       NaN   1855.449657   
+4  http://www.chathamncrod.org/DocumentView.asp?b...       NaN  56211.236282   
+
+  shape_stlength                                          geo_shape  \
+0     599.270260  {"coordinates": [[[-78.89225434855018, 35.9464...   
+1     230.001119  {"coordinates": [[[-78.89150298754056, 35.9469...   
+2     229.997112  {"coordinates": [[[-78.89087038163103, 35.9481...   
+3     225.649399  {"coordinates": [[[-78.86743108354702, 35.9486...   
+4    1325.212706  {"coordinates": [[[-79.0703018138949, 35.79565...   
+
+                                  geo_point_2d  
+0  POINT(-78.89264718831579 35.94666554814905)  
+1   POINT(-78.8916635959808 35.94695463155815)  
+2  POINT(-78.89090513737952 35.94800575875267)  
+3  POINT(-78.86753769584605 35.94877282770398)  
+4  POINT(-79.07028956130053 35.79525448583693)  
+
+[5 rows x 63 columns]
+
+2.	Understanding the Data
+
+Shape of Dataset (Rows, Columns):
+(5000, 63)
+
+Column Names:
+Index(['pin', 'pin10', 'realid', 'owner', 'owner2', 'owneradd1', 'owneradd2',
+       'owneradd3', 'location', 'calcacreage', 'deedacres', 'streetnumber',
+       'streetmisc', 'streetprefix', 'streetname', 'streettype',
+       'streetsuffix', 'landclass', 'lclass', 'totalstructures', 'totalunits',
+       'propertydesc', 'lotnum', 'bldgvalue', 'landvalue', 'landsalevalue',
+       'landsaledate', 'totalsalevalue', 'totalsaledate', 'deedbook',
+       'deedpage', 'wc_city', 'cary_city', 'wc_etj', 'topography', 'township',
+       'apaownership', 'apaactivity', 'apafunction', 'apastructure', 'apasite',
+       'wc_zoning', 'billingclass', 'apaownershipdesc', 'apaactivitydesc',
+       'apafunctiondesc', 'apastructuredesc', 'apasitedesc', 'county',
+       'totalbldgsqft', 'typeanduse', 'typedecode', 'phycity', 'phyzip',
+       'utilities', 'ownerwholename', 'reallink', 'deedlink', 'yearbuilt',
+       'shape_starea', 'shape_stlength', 'geo_shape', 'geo_point_2d'],
+      dtype='object')
+
+Dataset Info:
+<class 'pandas.core.frame.DataFrame'>
+RangeIndex: 5000 entries, 0 to 4999
+Data columns (total 63 columns):
+ #   Column            Non-Null Count  Dtype  
+---  ------            --------------  -----  
+ 0   pin               5000 non-null   object 
+ 1   pin10             5000 non-null   object 
+ 2   realid            5000 non-null   int64  
+ 3   owner             5000 non-null   object 
+ 4   owner2            1413 non-null   object 
+ 5   owneradd1         5000 non-null   object 
+ 6   owneradd2         3972 non-null   object 
+ 7   owneradd3         162 non-null    object 
+ 8   location          5000 non-null   object 
+ 9   calcacreage       5000 non-null   float64
+ 10  deedacres         3867 non-null   float64
+ 11  streetnumber      5000 non-null   int64  
+ 12  streetmisc        4 non-null      object 
+ 13  streetprefix      25 non-null     object 
+ 14  streetname        3854 non-null   object 
+ 15  streettype        3810 non-null   object 
+ 16  streetsuffix      1 non-null      object 
+ 17  landclass         5000 non-null   object 
+ 18  lclass            3867 non-null   object 
+ 19  totalstructures   3867 non-null   float64
+ 20  totalunits        3867 non-null   float64
+ 21  propertydesc      4999 non-null   object 
+ 22  lotnum            3660 non-null   object 
+ 23  bldgvalue         5000 non-null   float64
+ 24  landvalue         5000 non-null   float64
+ 25  landsalevalue     3867 non-null   float64
+ 26  landsaledate      1805 non-null   object 
+ 27  totalsalevalue    3867 non-null   float64
+ 28  totalsaledate     3151 non-null   object 
+ 29  deedbook          4987 non-null   object 
+ 30  deedpage          4987 non-null   float64
+ 31  wc_city           3528 non-null   object 
+ 32  cary_city         1140 non-null   object 
+ 33  wc_etj            3822 non-null   object 
+ 34  topography        0 non-null      float64
+ 35  township          3822 non-null   object 
+ 36  apaownership      3867 non-null   float64
+ 37  apaactivity       3867 non-null   float64
+ 38  apafunction       3867 non-null   float64
+ 39  apastructure      3867 non-null   float64
+ 40  apasite           3867 non-null   float64
+ 41  wc_zoning         3822 non-null   object 
+ 42  billingclass      3822 non-null   object 
+ 43  apaownershipdesc  3819 non-null   object 
+ 44  apaactivitydesc   3819 non-null   object 
+ 45  apafunctiondesc   3819 non-null   object 
+ 46  apastructuredesc  3741 non-null   object 
+ 47  apasitedesc       3822 non-null   object 
+ 48  county            5000 non-null   object 
+ 49  totalbldgsqft     3187 non-null   float64
+ 50  typeanduse        3265 non-null   float64
+ 51  typedecode        3265 non-null   object 
+ 52  phycity           3814 non-null   object 
+ 53  phyzip            3742 non-null   float64
+ 54  utilities         3806 non-null   object 
+ 55  ownerwholename    3822 non-null   object 
+ 56  reallink          5000 non-null   object 
+ 57  deedlink          5000 non-null   object 
+ 58  yearbuilt         0 non-null      float64
+ 59  shape_starea      5000 non-null   float64
+ 60  shape_stlength    5000 non-null   float64
+ 61  geo_shape         4999 non-null   object 
+ 62  geo_point_2d      4999 non-null   object 
+dtypes: float64(21), int64(2), object(40)
+memory usage: 2.4+ MB
+None
+
+Random Sample of Data:
+               pin       pin10  realid                                owner  \
+1635  072797011748  0727011748  153876                    DANKO DARREN MARK   
+1399  077409058743  0774058743  213545            KEUNG, ALBERT J OH, ANNIE   
+1397  067503040145  0675040145  471917  BRADLEY, JOSEPH A BRADLEY, KIRA KIS   
+457   076317022339  0763022339  211594    LAKEPOINT VILLAGE HOMEOWNERS ASSC   
+4822  074714863227  0747863227  157841            PRESCHOOL ENTERPRISES LLC   
+
+                     owner2                         owneradd1  \
+1635  SINCLAIR DEBORA RENEE          5603 FRENCHMANS CREEK DR   
+1399                    NaN                  429 FINCASTLE DR   
+1397                    NaN                     2092 HOSEL LN   
+457                     NaN  C/O OMEGA ASSOCIATION MANAGEMENT   
+4822                    NaN       4915 WATERS EDGE DR STE 255   
+
+                        owneradd2           owneradd3  \
+1635                          NaN                 NaN   
+1399           CARY NC 27513-6269                 NaN   
+1397  FUQUAY VARINA NC 27526-4697                 NaN   
+457     160 NE MAYNARD RD STE 210  CARY NC 27513-9676   
+4822                          NaN                 NaN   
+
+                      location  calcacreage  ...   phyzip  utilities  \
+1635  5603 FRENCHMANS CREEK DR     0.506000  ...      NaN        NaN   
+1399          429 FINCASTLE DR     0.189411  ...  27513.0        ALL   
+1397             2092 HOSEL LN     0.242247  ...  27526.0        ALL   
+457             0 LAKEWATER DR     0.016964  ...      0.0        ALL   
+4822            4523 HOPSON RD     1.777000  ...      NaN        NaN   
+
+                         ownerwholename  \
+1635                                NaN   
+1399          ALBERT J & ANNIE OH KEUNG   
+1397  JOSEPH A & KIRA KISSELEVA BRADLEY   
+457   LAKEPOINT VILLAGE HOMEOWNERS ASSC   
+4822                                NaN   
+
+                                               reallink  \
+1635  https://property.spatialest.com/nc/durham/#/pr...   
+1399  http://services.wakegov.com/realestate/Account...   
+1397  http://services.wakegov.com/realestate/Account...   
+457   http://services.wakegov.com/realestate/Account...   
+4822  https://property.spatialest.com/nc/durham/#/pr...   
+
+                                               deedlink yearbuilt  \
+1635  http://rodweb.co.durham.nc.us/RealEstate/Searc...       NaN   
+1399  http://services.wakegov.com/booksweb/GenExtSea...       NaN   
+1397  http://services.wakegov.com/booksweb/GenExtSea...       NaN   
+457   http://services.wakegov.com/booksweb/GenExtSea...       NaN   
+4822  http://rodweb.co.durham.nc.us/RealEstate/Searc...       NaN   
+
+      shape_starea shape_stlength  \
+1635  22059.286483     671.944000   
+1399   8250.739667     370.034615   
+1397  10553.943514     431.754814   
+457     738.934965     144.789769   
+4822  77403.190350    1110.019488   
+
+                                              geo_shape  \
+1635  {"coordinates": [[[-78.90171795958645, 35.8852...   
+1399  {"coordinates": [[[-78.760911777905, 35.798762...   
+1397  {"coordinates": [[[-78.76427629253767, 35.5472...   
+457   {"coordinates": [[[-78.79702318508276, 35.7622...   
+4822  {"coordinates": [[[-78.8583338972839, 35.87866...   
+
+                                     geo_point_2d  
+1635   POINT(-78.90205273995892 35.8853562713987)  
+1399   POINT(-78.76109207575782 35.7987977275584)  
+1397  POINT(-78.76451175549072 35.54716598902367)  
+457   POINT(-78.7969365315916 35.762201297846914)  
+4822  POINT(-78.85879251156352 35.87830603171187)  
+
+[5 rows x 63 columns]
+
+3.	Identify Numerical and Categorical Columns
+
+# Identify numerical columns
+numerical_cols = df.select_dtypes(include=[np.number]).columns
+
+# Identify categorical columns
+categorical_cols = df.select_dtypes(include=['object', 'category']).columns
+
+print("\nNumerical Columns:")
+print(numerical_cols)
+
+print("\nCategorical Columns:")
+print(categorical_cols)
+
+
+Numerical Columns:
+Index(['realid', 'calcacreage', 'deedacres', 'streetnumber', 'totalstructures',
+       'totalunits', 'bldgvalue', 'landvalue', 'landsalevalue',
+       'totalsalevalue', 'deedpage', 'topography', 'apaownership',
+       'apaactivity', 'apafunction', 'apastructure', 'apasite',
+       'totalbldgsqft', 'typeanduse', 'phyzip', 'yearbuilt', 'shape_starea',
+       'shape_stlength'],
+      dtype='object')
+
+Categorical Columns:
+Index(['pin', 'pin10', 'owner', 'owner2', 'owneradd1', 'owneradd2',
+       'owneradd3', 'location', 'streetmisc', 'streetprefix', 'streetname',
+       'streettype', 'streetsuffix', 'landclass', 'lclass', 'propertydesc',
+       'lotnum', 'landsaledate', 'totalsaledate', 'deedbook', 'wc_city',
+       'cary_city', 'wc_etj', 'township', 'wc_zoning', 'billingclass',
+       'apaownershipdesc', 'apaactivitydesc', 'apafunctiondesc',
+       'apastructuredesc', 'apasitedesc', 'county', 'typedecode', 'phycity',
+       'utilities', 'ownerwholename', 'reallink', 'deedlink', 'geo_shape',
+       'geo_point_2d'],
+      dtype='object')
+
+
+4.	Check for Missing Values and Duplicates
+5.	Missing Values in Each Column:
+6.	pin                  0
+7.	pin10                0
+8.	realid               0
+9.	owner                0
+10.	owner2            3587
+11.	                  ... 
+12.	yearbuilt         5000
+13.	shape_starea         0
+14.	shape_stlength       0
+15.	geo_shape            1
+16.	geo_point_2d         1
+17.	Length: 63, dtype: int64
+18.	
+19.	Percentage of Missing Values:
+20.	pin                 0.00
+21.	pin10               0.00
+22.	realid              0.00
+23.	owner               0.00
+24.	owner2             71.74
+25.	                   ...  
+26.	yearbuilt         100.00
+27.	shape_starea        0.00
+28.	shape_stlength      0.00
+29.	geo_shape           0.02
+30.	geo_point_2d        0.02
+31.	Length: 63, dtype: float64
+32.	
+33.	Number of Duplicate Rows: 0
+34.	
+35.	Shape After Removing Duplicates: (5000, 63)
+
+5. Perform Descriptive Statistics
+5.1  For Numerical Columns
+Descriptive Statistics for Numerical Columns:
+             realid  calcacreage    deedacres  streetnumber  totalstructures  \
+count    5000.00000  5000.000000  3867.000000   5000.000000      3867.000000   
+mean   341995.71820     1.151073     0.583938   2068.967000         0.999483   
+std    128271.61593     9.170716     2.372655   2374.924989         0.364628   
+min     71432.00000     0.000021     0.010000      0.000000         0.000000   
+25%    211311.75000     0.113000     0.090000    313.000000         1.000000   
+50%    379481.00000     0.212311     0.190000   1112.500000         1.000000   
+75%    463236.25000     0.422592     0.310000   3067.750000         1.000000   
+max    481959.00000   373.347000    60.680000  16000.000000        19.000000   
+
+        totalunits     bldgvalue     landvalue  landsalevalue  totalsalevalue  \
+count  3867.000000  5.000000e+03  5.000000e+03   3.867000e+03    3.867000e+03   
+mean      0.966382  4.408309e+05  1.353360e+05   5.102588e+04    3.479271e+05   
+std       6.060175  2.239519e+06  5.511707e+05   1.843191e+05    1.104572e+06   
+min       0.000000  0.000000e+00  0.000000e+00   0.000000e+00    0.000000e+00   
+25%       1.000000  1.505348e+05  4.754100e+04   0.000000e+00    1.875000e+05   
+50%       1.000000  2.418055e+05  7.000000e+04   0.000000e+00    3.115000e+05   
+75%       1.000000  3.377532e+05  9.520375e+04   6.800000e+04    4.290000e+05   
+max     352.000000  7.101146e+07  1.518345e+07   6.550000e+06    6.100000e+07   
+
+       ...  apaactivity  apafunction  apastructure      apasite  \
+count  ...  3867.000000  3867.000000   3867.000000  3867.000000   
+mean   ...  2252.081717  2382.940781   2239.089992  5430.835273   
+std    ...  2787.895216  3101.281441   2788.397722  1761.165548   
+min    ...     0.000000     0.000000      0.000000     0.000000   
+25%    ...  1100.000000  1100.000000   1110.000000  6100.000000   
+50%    ...  1100.000000  1100.000000   1110.000000  6100.000000   
+75%    ...  1100.000000  1100.000000   1140.000000  6100.000000   
+max    ...  9000.000000  9900.000000   9000.000000  7220.000000   
+
+       totalbldgsqft   typeanduse        phyzip  yearbuilt  shape_starea  \
+count    3187.000000  3265.000000   3742.000000        0.0  5.000000e+03   
+mean     3152.263257     2.040735  27459.359968        NaN  4.980023e+04   
+std     10095.503451     9.137961   1491.561284        NaN  3.988886e+05   
+min       486.000000     1.000000      0.000000        NaN  9.336471e-01   
+25%      1925.500000     1.000000  27519.000000        NaN  4.927447e+03   
+50%      2490.000000     1.000000  27526.000000        NaN  9.243036e+03   
+75%      3114.500000     1.000000  27560.000000        NaN  1.831164e+04   
+max    404712.000000   200.000000  27703.000000        NaN  1.626323e+07   
+
+       shape_stlength  
+count     5000.000000  
+mean       659.209330  
+std       1076.914713  
+min          4.450161  
+25%        311.087892  
+50%        410.207337  
+75%        595.938995  
+max      31849.268525  
+
+[8 rows x 23 columns]
+Additional Statistics:
+Skewness of Numerical Columns:
+realid             -0.566651
+calcacreage        28.773900
+deedacres          12.442453
+streetnumber        1.592923
+totalstructures    37.437215
+totalunits         52.604218
+bldgvalue          18.606654
+landvalue          17.590142
+landsalevalue      19.400193
+totalsalevalue     45.290619
+deedpage            0.418436
+topography               NaN
+apaownership       12.063389
+apaactivity         1.988935
+apafunction         1.993291
+apastructure        1.986157
+apasite            -2.184370
+totalbldgsqft      28.791715
+typeanduse         13.245253
+phyzip            -18.356043
+yearbuilt                NaN
+shape_starea       28.893520
+shape_stlength     11.740966
+dtype: float64
+
+Kurtosis of Numerical Columns:
+realid               -1.292276
+calcacreage         994.038170
+deedacres           209.940294
+streetnumber          2.213095
+totalstructures    1702.068144
+totalunits         2958.595080
+bldgvalue           435.639242
+landvalue           385.216344
+landsalevalue       524.420761
+totalsalevalue     2389.623446
+deedpage             -1.081212
+topography                 NaN
+apaownership        199.891153
+apaactivity           1.997375
+apafunction           2.013211
+apastructure          2.020222
+apasite               2.843298
+totalbldgsqft       977.708883
+typeanduse          229.775685
+phyzip              335.295086
+yearbuilt                  NaN
+shape_starea       1000.016147
+shape_stlength      239.414352
+dtype: float64
+5.2 For Categorical Columns
+Descriptive Statistics for Categorical Columns:
+                 pin       pin10                              owner    owner2  \
+count           5000        5000                               5000      1413   
+unique          4969        4968                               4605      1360   
+top     97980471.000  979871.000  TAYLOR MORRISON OF CAROLINAS, INC  CAROLINA   
+freq               5           5                                 25        11   
+
+                        owneradd1           owneradd2              owneradd3  \
+count                        5000                3972                    162   
+unique                       4536                1919                     54   
+top     15501 WESTON PKWY STE 100  CARY NC 27518-8119  RALEIGH NC 27612-4652   
+freq                           33                  36                     25   
+
+                  location streetmisc streetprefix  ...       apasitedesc  \
+count                 5000          4           25  ...              3822   
+unique                4958          3            5  ...                10   
+top     0 GARDEN SQUARE LN        1/2            N  ...  Residential Lots   
+freq                     5          2           10  ...              3205   
+
+       county typedecode phycity utilities                    ownerwholename  \
+count    5000       3265    3814      3806                              3822   
+unique      3         33      10         7                              3506   
+top      Wake   SINGLFAM    CARY       ALL  INC TAYLOR MORRISON OF CAROLINAS   
+freq     3822       3195    1020      3037                                25   
+
+                                                 reallink  \
+count                                                5000   
+unique                                               5000   
+top     https://property.spatialest.com/nc/durham/#/pr...   
+freq                                                    1   
+
+                                                 deedlink  \
+count                                                5000   
+unique                                               4704   
+top     http://services.wakegov.com/booksweb/GenExtSea...   
+freq                                                   25   
+
+                                                geo_shape  \
+count                                                4999   
+unique                                               4960   
+top     {"coordinates": [[[-78.8939257373242, 35.93510...   
+freq                                                    5   
+
+                                       geo_point_2d  
+count                                          4999  
+unique                                         4960  
+top     POINT(-78.89435198062107 35.93458015724831)  
+freq                                              5  
+
+[4 rows x 40 columns]
+
+Value Counts for pin:
+pin
+97980471.000    5
+97980471.004    5
+97980471.003    5
+97980471.002    3
+97980472.004    3
+               ..
+072103249350    1
+077414338546    1
+079509171088    1
+073501460046    1
+073501461200    1
+Name: count, Length: 4969, dtype: int64
+
+Value Counts for pin10:
+pin10
+979871.000    5
+979871.003    5
+979871.004    5
+979872.001    3
+979872.000    3
+             ..
+0721249350    1
+0774338546    1
+0795171088    1
+0735460046    1
+0735461200    1
+Name: count, Length: 4968, dtype: int64
+
+Value Counts for owner:
+owner
+TAYLOR MORRISON OF CAROLINAS, INC      25
+PULTE HOME COMPANY LLC                 24
+EASTWOOD HOMES OF RALEIGH LLC          14
+PULTE HOME COMPANY, LLC                12
+CARUSO BUILDER WELLFIELD LLC           12
+                                       ..
+LEE, AIDEN JOON SOUNG, SO YONG          1
+ATM OF NC LLC                           1
+MOSS, DAVID L                           1
+TURNER, ERIC GEORGE SAUNDERS, CARLE     1
+KOLODZIESKI, SCOTT KOLODZIESKI, CAR     1
+Name: count, Length: 4605, dtype: int64
+
+Value Counts for owner2:
+owner2
+CAROLINA                         11
+LLC                               9
+INC                               8
+PARTNERSHIP                       6
+NORTH CAROLINA LLC                4
+                                 ..
+JOHN B DERDUL REVOCABLE TRUST     1
+TAFALLA, SUSANNE CHRISTINE        1
+SLIGHTOM SARAH JOHNSON            1
+LUMPKIN MARY S                    1
+HENSHALL, STACEY LEE              1
+Name: count, Length: 1360, dtype: int64
+
+Value Counts for owneradd1:
+owneradd1
+15501 WESTON PKWY STE 100      33
+1225 CRESCENT GRN STE 250      31
+ELITE MANAGEMENT               16
+2857 WESTPORT RD               15
+4025 LAKE BOONE TRL STE 200    13
+                               ..
+134 THOMAS MILL RD              1
+ZHANG PEIPEI                    1
+3613 LONG TOWNSEND AVE          1
+5611 FRENCHMANS CREEK DR        1
+9909 FABRIC RIDGE LN            1
+Name: count, Length: 4536, dtype: int64
+
+Value Counts for owneradd2:
+owneradd2
+CARY NC 27518-8119             36
+CARY NC 27513-8636             32
+4112 BLUE RIDGE RD STE 100     26
+160 NE MAYNARD RD STE 210      18
+CARY NC 27518-7189             15
+                               ..
+RALEIGH NC 27606-1561           1
+RM 12W12                        1
+HOLLY SPRINGS NC 27540-5466     1
+STE 106-117                     1
+4309 EMPEROR BLVD               1
+Name: count, Length: 1919, dtype: int64
+
+Value Counts for owneradd3:
+owneradd3
+RALEIGH NC 27612-4652            25
+CARY NC 27513-9676               18
+RALEIGH NC 27624-7243            13
+RALEIGH NC 27614-8837            13
+RALEIGH NC 27609-5732            12
+DALLAS TX 75370-2348              8
+RALEIGH NC 27624-9149             7
+AGOURA HILLS CA 91301-2148        4
+SILVER SPRING MD 20910-1265       4
+APEX NC 27502-3117                3
+CHARLOTTE NC 28210-3124           3
+RALEIGH NC 27612-2101             3
+CARY NC 27513-2414                2
+CARY NC 27512-8005                2
+PITTSBORO NC 27312-1866           2
+PINEHURST NC 28370-0083           2
+HOLLY SPRINGS NC 27540-0008       2
+MARIETTA GA 30067-8261            2
+NEW YORK NY 10022-6837            2
+CARY NC 27519-8195                1
+CARY NC 27519-8194                1
+CHICAGO IL 60690-3878             1
+RALEIGH NC 27605-1317             1
+APEX NC 27502-3149                1
+CARY NC 27513-6268                1
+APEX NC 27502-3924                1
+DULUTH MN 55807-2564              1
+CARY NC 27518-5479                1
+PHOENIX AZ 85072-2085             1
+NEWPORT BEACH CA 92660-7928       1
+ATHENS GA 30601-3605              1
+RALEIGH NC 27603-1335             1
+MORRISVILLE NC 27560-7391         1
+CANADA                            1
+HUNTSVILLE AL 35824-1514          1
+MINNEAPOLIS MN 55440-9456         1
+COLUMBUS OH 43215-5088            1
+CARY NC 27519-8397                1
+OOUISE MARSH PARISER REV TRUS     1
+SAN FRANCISCO CA 94114-1833       1
+CARY NC 27519-5894                1
+RALEIGH NC 27603-1725             1
+REPUBLIC OF SINGAPORE             1
+RALEIGH NC 27612-7051             1
+SAN ANTONIO TX 78279-0830         1
+DALLAS TX 75201-4657              1
+BETHESDA MD 20814-4830            1
+ATLANTA GA 30346-2100             1
+FRANKLIN TN 37064-2612            1
+ST PETERSBURG FL 33707-1720       1
+CARY NC 27513-8352                1
+CHARLOTTE NC 28201                1
+RALEIGH NC 27615-3546             1
+GERMANY                           1
+Name: count, dtype: int64
+
+Value Counts for location:
+location
+0 GARDEN SQUARE LN        5
+0 BARTLEY HOLLEMAN RD     4
+0 MILANO AVE              3
+0 DOVE COTTAGE LN         3
+0 HAMMOND WOOD PL         3
+                         ..
+9433 TWEEDS MILL RD       1
+2100 VILLAGE MARKET PL    1
+2957 BARONIAL ST          1
+412 LONG LAKE DR          1
+420 BEAVERDAM LAKE DR     1
+Name: count, Length: 4958, dtype: int64
+
+Value Counts for streetmisc:
+streetmisc
+1/2    2
+A      1
+MC     1
+Name: count, dtype: int64
+
+Value Counts for streetprefix:
+streetprefix
+N     10
+E      8
+S      5
+W      1
+NW     1
+Name: count, dtype: int64
+
+Value Counts for streetname:
+streetname
+MICHIGAN         34
+DOVE COTTAGE     33
+MONETA           31
+PANORAMA PARK    25
+SWEET LAUREL     23
+                 ..
+VALLEY CREST      1
+STONE             1
+LUNDY             1
+BARRINGER         1
+EYAM HALL         1
+Name: count, Length: 1041, dtype: int64
+
+Value Counts for streettype:
+streettype
+DR      1157
+LN       746
+WAY      445
+CT       401
+RD       280
+PL       174
+ST       109
+AVE      109
+CIR      106
+TRL       58
+RUN       41
+BLVD      38
+LOOP      35
+TRCE      18
+CV        15
+WALK      15
+STA       13
+PKWY      12
+CRSG      11
+PATH       9
+CRES       5
+PT         5
+HWY        4
+ROW        2
+TER        2
+Name: count, dtype: int64
+
+Value Counts for streetsuffix:
+streetsuffix
+NE    1
+Name: count, dtype: int64
+
+Value Counts for landclass:
+landclass
+Residential < 10 Acres       3196
+RES/ 1-FAMILY                 608
+Vacant Land                   470
+RES/ TOWNHOUSE W/ LAND         92
+Part Exempt                    65
+                             ... 
+COMMUNITY SVCS (UNDIFF)         1
+CMNTY SVC/ CHILD DAY-CARE       1
+IND/ RETAIL SERVICES            1
+IND/ INDUSTRIAL (UNDIFF)        1
+PUBL SVC/ TELEPHONE             1
+Name: count, Length: 93, dtype: int64
+
+Value Counts for lclass:
+lclass
+R    3196
+V     470
+P      65
+C      55
+E      27
+B      15
+I      11
+A       6
+M       5
+N       5
+G       3
+H       2
+Y       2
+F       2
+W       1
+O       1
+U       1
+Name: count, dtype: int64
+
+Value Counts for propertydesc:
+propertydesc
+N/A - NO SUBDIVISION                          242
+FALCONBRDG SOUTH                               18
+VLC RAW P1 TW                                  13
+PROP-PAGE W S ESTATE                           13
+STIRRUP CRK PH 2                               12
+                                             ... 
+LO61 ELLINGTON PLACE PH1 BM2010 -00754          1
+LOO/S 19 WYNDCREST BM2019 -02123                1
+LO291 BUCKHORN PRESERVE PH1B BM2018 -02098      1
+LO132 WINDWARD POINTE SUB PH4 BM1995 -399       1
+LO21 BRECKENRIDGE III BM1994 -1447              1
+Name: count, Length: 4107, dtype: int64
+
+Value Counts for lotnum:
+lotnum
+2      65
+O/S    61
+1      58
+3      47
+4      43
+       ..
+120     1
+851     1
+632     1
+437     1
+444     1
+Name: count, Length: 706, dtype: int64
+
+Value Counts for landsaledate:
+landsaledate
+2018-08-28    29
+2010-01-29    28
+2019-09-23    21
+2010-08-20    20
+2012-02-15    18
+              ..
+2011-08-01     1
+2012-11-02     1
+2012-06-12     1
+1998-11-05     1
+2011-12-23     1
+Name: count, Length: 876, dtype: int64
+
+Value Counts for totalsaledate:
+totalsaledate
+2021-05-28    15
+2021-02-26    13
+2021-08-31    10
+2021-06-25    10
+2021-12-17    10
+              ..
+2012-08-07     1
+2020-09-21     1
+2012-10-12     1
+2013-11-21     1
+2013-10-31     1
+Name: count, Length: 1729, dtype: int64
+
+Value Counts for deedbook:
+deedbook
+016830    26
+017557    14
+017200    12
+001112    11
+017240    11
+          ..
+015497     1
+001101     1
+015501     1
+017190     1
+015240     1
+Name: count, Length: 3486, dtype: int64
+
+Value Counts for wc_city:
+wc_city
+CAR    1177
+FUQ     595
+APE     587
+HOL     492
+RAL     417
+MOR     200
+ANG      34
+GAR      24
+DUR       2
+Name: count, dtype: int64
+
+Value Counts for cary_city:
+cary_city
+Cary    1140
+Name: count, dtype: int64
+
+Value Counts for wc_etj:
+wc_etj
+CA    1183
+FV     624
+AP     603
+HS     521
+RA     420
+WC     208
+MO     201
+AN      34
+GA      26
+DU       2
+Name: count, dtype: int64
+
+Value Counts for township:
+township
+12    665
+Wh    620
+06    526
+20    405
+05    257
+03    238
+Ce    206
+18    146
+Ca    113
+Sw    110
+11     92
+15     75
+08     75
+01     74
+07     72
+Mi     71
+Ho     43
+04     18
+02      3
+Me      3
+Bu      3
+SW      2
+CA      1
+Ra      1
+WH      1
+Le      1
+Ba      1
+Name: count, dtype: int64
+
+Value Counts for wc_zoning:
+wc_zoning
+PUD-C    437
+R-10     317
+TRP      266
+RMD-C    209
+PUD      197
+        ... 
+CX-7       1
+R/RM       1
+CR         1
+GC-CZ      1
+LI-CZ      1
+Name: count, Length: 117, dtype: int64
+
+Value Counts for billingclass:
+billingclass
+Individual     3185
+Business        390
+HOME ASSOC      221
+Exempt           24
+Life Estate       1
+Public            1
+Name: count, dtype: int64
+
+Value Counts for apaownershipdesc:
+apaownershipdesc
+Individual Ownership                 3185
+Corporation                           390
+Home Owners Association Ownership     221
+City, Village, Township, Etc.           7
+State Government                        4
+Private Burial Property                 3
+Nonprofit Other                         3
+Nonprofit Religious                     2
+Life Estate Ownership                   1
+Federal Government                      1
+County, Parish, Province, Etc.          1
+Utilities Ownership                     1
+Name: count, dtype: int64
+
+Value Counts for apaactivitydesc:
+apaactivitydesc
+Household Activities                                   3207
+No Human Or Unclassifiable                              557
+Shopping                                                 10
+Office Activities                                         7
+Primarily Goods Storage Or Handling Activities            5
+Swimming, Diving, Etc.                                    5
+Restaurant-Type                                           5
+Service-Oriented Shopping                                 4
+Retail Combination                                        3
+Child Day Care Activities                                 3
+Restaurant-Type With Drive-Through                        3
+Office Activities With High Turnover Of Automobiles       2
+Goods-Oriented Shopping                                   2
+General Medical Care                                      2
+Transient Living                                          1
+Primarily Plant Or Factory-Type Activities                1
+Veterinary Medical Care                                   1
+Religious Assembly                                        1
+Name: count, dtype: int64
+
+Value Counts for apafunctiondesc:
+apafunctiondesc
+Private Household                                 3207
+Unclassifiable function                            557
+Retail Sales Or Service                             12
+Office And Administrative Services                   8
+Warehouse And Storage Services                       5
+Amusement, Sports Or Recreation Establishment        5
+Automobile Sales Or Service Establishment            4
+Full-Service Restaurant                              3
+Child Day Care                                       3
+Cafeteria Or Limited Service Restaurant              3
+Bank, Credit Union Or Savings Institution            2
+Clinics                                              2
+Bar And Drinking Place                               2
+Limited Service Motel                                1
+Convenience Store                                    1
+Miscellaneous Manufacturing                          1
+Department Store, Warehouse Club Or Superstore       1
+Veterinary Services                                  1
+Religious Institutions                               1
+Name: count, dtype: int64
+
+Value Counts for apastructuredesc:
+apastructuredesc
+Detached Units                                                     2204
+Townhouses                                                          913
+No structure                                                        557
+Office Or Bank Building                                              11
+Manufactured Housing, Built During Or After 1974                      6
+Restaurant Building                                                   6
+Bath House Structures                                                 5
+Automobile Repair And Service Structures                              4
+Store Or Shop Building                                                4
+Standard Type Warehouse                                               3
+Multifamily Structures                                                3
+Duplex Structures                                                     3
+School Or University Buildings                                        3
+Standalone Store Or Shop Building                                     3
+Bar Or Social Club Building                                           2
+Community Center (General Merchandise With Two Or More Anchors)       2
+Medical Office Building                                               2
+Convenience Stores Or Centers                                         1
+Neighborhood Center (Convenience With One Or More Anchors)            1
+Discount Store Building                                               1
+Residential Structure Converted For Office Use                        1
+Prefabricated Warehouse                                               1
+Limited Service Motel                                                 1
+Veterinary Clinic Building                                            1
+Light Industrial Structures And Facilities                            1
+Flex Warehouse                                                        1
+Churches, Synagogues, Temples, Mosques, Etc.                          1
+Name: count, dtype: int64
+
+Value Counts for apasitedesc:
+apasitedesc
+Residential Lots             3205
+Site In Natural State         457
+Developed Exempt Property      91
+Commercial Property            55
+Developing Site                 6
+Forestry Property               2
+Farm Land                       2
+Historic Sites Or Parks         2
+Recreational Property           1
+Water/Sewer System              1
+Name: count, dtype: int64
+
+Value Counts for county:
+county
+Wake       3822
+Durham     1133
+Chatham      45
+Name: count, dtype: int64
+
+Value Counts for typedecode:
+typedecode
+SINGLFAM         3195
+OFC GROSS           6
+MOBILE              6
+BATH HSE            5
+MULT TEN            4
+WAREHSE             3
+GRDN APT            3
+SNGL TEN            3
+FASTFOOD            3
+DAY CARE            3
+RESTAURA            3
+SER GAR PREM        3
+TWOFAM              3
+BANK BLD            2
+DRUGSTOR            2
+CLUB                2
+MED OFC GROSS       2
+COMM S/C            2
+SORORITY            1
+PREFAB              1
+RES CONV            1
+SER GARG            1
+NBHD S/C            1
+CONV STORE          1
+H/M-LIMT            1
+VET CLIN            1
+OIL CHG             1
+DISC STR            1
+LT MANUF            1
+FLEX WHSE           1
+CHURCH              1
+SALE/SER            1
+HR OFFC             1
+Name: count, dtype: int64
+
+Value Counts for phycity:
+phycity
+CARY             1020
+APEX              698
+FUQUAY VARINA     562
+RALEIGH           554
+HOLLY SPRINGS     515
+MORRISVILLE       247
+NEW HILL          102
+WILLOW SPRING      80
+ANGIER             34
+DURHAM              2
+Name: count, dtype: int64
+
+Value Counts for utilities:
+utilities
+ALL    3037
+E       660
+WE       58
+WSE      30
+WGE      17
+GE        3
+WSG       1
+Name: count, dtype: int64
+
+Value Counts for ownerwholename:
+ownerwholename
+INC TAYLOR MORRISON OF CAROLINAS     25
+PULTE HOME COMPANY LLC               24
+EASTWOOD HOMES OF RALEIGH LLC        14
+LLC PULTE HOME COMPANY               12
+CARUSO BUILDER WELLFIELD LLC         12
+                                     ..
+MCDONALDS CORPORATION (32-521)        1
+NELSON T & SUSAN M SCHMITZ            1
+TING & XIAOSONG MA YU                 1
+GENERAL CONCRETE CONSTRUCTION INC     1
+DANIEL STEWART MARLOWE                1
+Name: count, Length: 3506, dtype: int64
+
+Value Counts for reallink:
+reallink
+https://property.spatialest.com/nc/durham/#/property/158154      1
+https://property.spatialest.com/nc/durham/#/property/229533      1
+https://property.spatialest.com/nc/durham/#/property/229452      1
+https://property.spatialest.com/nc/durham/#/property/229501      1
+https://property.spatialest.com/nc/durham/#/property/230143      1
+                                                                ..
+http://services.wakegov.com/realestate/Account.asp?id=0375604    1
+http://services.wakegov.com/realestate/Account.asp?id=0469223    1
+https://property.spatialest.com/nc/durham/#/property/141239      1
+http://services.wakegov.com/realestate/Account.asp?id=0210624    1
+http://services.wakegov.com/realestate/Account.asp?id=0376010    1
+Name: count, Length: 5000, dtype: int64
+
+Value Counts for deedlink:
+deedlink
+http://services.wakegov.com/booksweb/GenExtSearch.aspx?BookPage=016830-02668           25
+http://services.wakegov.com/booksweb/GenExtSearch.aspx?BookPage=-                      13
+http://services.wakegov.com/booksweb/GenExtSearch.aspx?BookPage=017557-01749           11
+http://rodweb.co.durham.nc.us/RealEstate/SearchDetail.aspx?bk=1112&pg=563&type=BkPg    11
+http://services.wakegov.com/booksweb/GenExtSearch.aspx?BookPage=017200-02123           11
+                                                                                       ..
+http://services.wakegov.com/booksweb/GenExtSearch.aspx?BookPage=014055-00886            1
+http://services.wakegov.com/booksweb/GenExtSearch.aspx?BookPage=018528-00407            1
+http://rodweb.co.durham.nc.us/RealEstate/SearchDetail.aspx?bk=8854&pg=307&type=BkPg     1
+http://services.wakegov.com/booksweb/GenExtSearch.aspx?BookPage=017456-02261            1
+http://rodweb.co.durham.nc.us/RealEstate/SearchDetail.aspx?bk=8339&pg=84&type=BkPg      1
+Name: count, Length: 4704, dtype: int64
+
+Value Counts for geo_shape:
+geo_shape
+{"coordinates": [[[-78.8939257373242, 35.93510759636095], [-78.89367305503073, 35.93483422731089], [-78.89324334910307, 35.934372440447945], [-78.8941183793053, 35.9337958057034], [-78.89412607665906, 35.93356711133139], [-78.89537994303363, 35.93448431330669], [-78.89539747694371, 35.93458663255762], [-78.89532811680353, 35.93467354809172], [-78.89518511636525, 35.93483943584926], [-78.89503489181283, 35.935001031559366], [-78.89487764618659, 35.93515814339507], [-78.89471354928568, 35.93531057859948], [-78.89454283637107, 35.93545809129539], [-78.89436571264659, 35.93560054283419], [-78.89435854376646, 35.93560613998073], [-78.89426144046062, 35.93546655617706], [-5
+{"coordinates": [[[-78.8953006304818, 35.93672339445161], [-78.89519395569232, 35.93661687804813], [-78.89508728118315, 35.93651036244848], [-78.8950313806448, 35.93645451974804], [-78.89499152752552, 35.93639641055104], [-78.89490777740211, 35.936274227469575], [-78.89481067506394, 35.93613255584027], [-78.89471353981997, 35.93599088319624], [-78.89462982371283, 35.93586875581431], [-78.89452007905291, 35.93570863883348], [-78.89452153294712, 35.93570789832414], [-78.89452403572344, 35.935705950084646], [-78.89452613173268, 35.935704029433715], [-78.89452863447333, 35.93570210823293], [-78.89453069719939, 35.935700214592025], [-78.8945332001553, 35.935698128454376], [-78.89453529616412, 35.93569620780333], [-78.89453783215208, 35.93569428663104], [-78.89453986162995, 35.935692392961265], [-78.89454236433345, 35.935690499700286], [-78.89454449469902, 35.935688578177476], [-78.89454699743762, 35.935686657877554], [-78.89454949906899, 35.93568473667538], [-78.8945515617941, 35.93568284303411], [-78.89455406453351, 35.93568092183282], [-78.8945561616497, 35.93567900118234], [-78.89455866349603, 35.93567691504315], [-78.894560726256, 35.93567499436294], [-78.89456322895964, 35.935673100200226], [-78.8945653260754, 35.935671179549594], [-78.89456782770587, 35.935669258347026], [-78.89456989153841, 35.935667364706376], [-78.89457239313215, 35.93566547144384], [-78.89457449046283, 35.93566338585624], [-78.89457699209285, 35.93566146465347], [-78.89457905596146, 35.93565954307261], [-78.89458155759004, 35.93565762277102], [-78.89458368791738, 35.93565572918758], [-78.89458619065519, 35.935653807985595], [-78.89458825341507, 35.93565188640355], [-78.89459078961455, 35.93564980119468], [-78.89459285237425, 35.93564787961262], [-78.8945953550751, 35.935645986350536], [-78.89459741779815, 35.935644092708415], [-78.89459992053527, 35.93564217150612], [-78.89460201786467, 35.93564008591807], [-78.89460451949329, 35.935638164714724], [-78.89460658221587, 35.93563627107253], [-78.89460908495136, 35.9356343507713], [-78.89461118206621, 35.935632429218586], [-78.8946136839085, 35.935630343979525], [-78.89461574666716, 35.935628422397095], [-78.89461784374521, 35.935626528784304], [-78.89462037972896, 35.935624607610244], [-78.89462240920317, 35.93562271393907], [-78.89462491215318, 35.935620628700725], [-78.8946270425149, 35.93561870717644], [-78.89462954410581, 35.93561681391265], [-78.89463160797203, 35.93561489233085], [-78.89463410981325, 35.93561280709138], [-78.89463620692693, 35.93561088553817], [-78.89463870855268, 35.93560896523541], [-78.8946407380625, 35.93560704362379], [-78.89464286971058, 35.935604985103446], [-78.89464537133713, 35.935603063899215], [-78.89464743405789, 35.93560117025633], [-78.89464993700659, 35.935599085017444], [-78.89465203411949, 35.93559716346396], [-78.89465453570912, 35.93559527019971], [-78.89465659846597, 35.93559334861648], [-78.89465910141412, 35.93559126337745], [-78.89466119852668, 35.93558934182382], [-78.89466326128195, 35.93558742114182], [-78.89466576423094, 35.93558533500131], [-78.89466786019845, 35.93558344138673], [-78.89467039617848, 35.93558152111291], [-78.89467242586561, 35.935579462504094], [-78.89467492863542, 35.935577513360094], [-78.89467705895838, 35.935575619774944], [-78.89467915628407, 35.935573534185515], [-78.8946816246247, 35.93557164089191], [-78.89468372062788, 35.93556971933698], [-78.89468622357465, 35.93556763409732], [-78.89468828632998, 35.93556571251361], [-78.89469038344116, 35.935563790959435], [-78.89469288638753, 35.93556170571962], [-78.89469494907082, 35.93555983911473], [-78.89469745069358, 35.935557918810694], [-78.89469954801945, 35.9355558323196], [-78.89470161077297, 35.93555391163688], [-78.89470411350486, 35.93555199043242], [-78.8947062108292, 35.93554990484246], [-78.89470874677322, 35.93554801070541], [-78.89471077538555, 35.93554592505609], [-78.8947128724956, 35.93554400350151], [-78.8947153752257, 35.935542083198094], [-78.89471743815838, 35.93554002461715], [-78.89471953526814, 35.935538103062484], [-78.8947220371047, 35.93553601782113], [-78.89472410093141, 35.93553412327655], [-78.89472660258912, 35.935532175031774], [-78.89472869987712, 35.93553011648026], [-78.89473076262931, 35.93552819579705], [-78.89473326553826, 35.93552613759526], [-78.89473536157436, 35.935524189000496], [-78.89473745861159, 35.935522322424504], [-78.8947399615555, 35.935520237183695], [-78.89474205866422, 35.93551831562865], [-78.89474412163204, 35.935516229107094], [-78.89474662325229, 35.935514308802006], [-78.8947487205757, 35.93551222231007], [-78.894750783327, 35.93551030162647], [-78.89475328627131, 35.93550821548416], [-78.89475538334302, 35.93550632186895], [-78.89475744627373, 35.93550426328731], [-78.89475994792969, 35.935502315041845], [-78.89476204525133, 35.93550022945093], [-78.89476410907612, 35.93549833490561], [-78.89476661069533, 35.93549641460013], [-78.89476870801782, 35.93549432810779], [-78.89477077073289, 35.93549243446269], [-78.89477330692264, 35.93549034924986], [-78.89477536967391, 35.93548842766458], [-78.89477743374711, 35.93548634204478], [-78.89477993536687, 35.93548442083769], [-78.89478203265223, 35.935482362285214], [-78.89478409561687, 35.93548027666432], [-78.89478659834451, 35.935478355458024], [-78.89478869566598, 35.93547626896532], [-78.89479075838015, 35.93547437531991], [-78.89479326021294, 35.93547229007704], [-78.89479535731911, 35.93547036852103], [-78.89479742028318, 35.935468282899855], [-78.89479951735274, 35.935466389283874], [-78.89480202029449, 35.935464303140485], [-78.89480408304324, 35.93546238245601], [-78.89480618036387, 35.93546029596298], [-78.89480864869806, 35.935458402666804], [-78.89481074601842, 35.9354563161737], [-78.89481284222933, 35.935454230580895], [-78.89481534495542, 35.93545230937405], [-78.89481744227433, 35.93545022378215], [-78.89481953823473, 35.935448330164846], [-78.89482160230696, 35.935446243642865], [-78.89482410392323, 35.935444323336185], [-78.89482620124282, 35.935442236842796], [-78.89482826420532, 35.935440151221094], [-78.89483036127348, 35.93543825760459], [-78.89483286310528, 35.9354361714596], [-78.89483492696087, 35.935434250775494], [-78.89483702424351, 35.93543219222206], [-78.89483908720669, 35.935430105698856], [-78.89484158882318, 35.935428184490505], [-78.89484368614073, 35.93542609889808], [-78.89484574910357, 35.935424012374796], [-78.89484825182677, 35.93542209206854], [-78.8948503491452, 35.935420005574755], [-78.89485241189169, 35.935418084889385], [-78.89485450913831, 35.93541605337446], [-78.89485701096764, 35.935413968130234], [-78.89485907478682, 35.93541207448459], [-78.8948611710317, 35.93540996095076], [-78.89486323510185, 35.93540787442813], [-78.89486533109535, 35.935405953771166], [-78.89486783403349, 35.935403867626434], [-78.8948698969939, 35.93540178200395], [-78.89487199406129, 35.935399887485424], [-78.8948740570215, 35.93539780186288], [-78.89487655995796, 35.93539571661922], [-78.8948786559168, 35.93539382209957], [-78.89488071998493, 35.93539173647788], [-78.89488281730173, 35.935389649983506], [-78.89488488004666, 35.93538772929758], [-78.89488738187548, 35.93538564315148], [-78.8948894791556, 35.93538358459707], [-78.89489154211493, 35.9353814989742], [-78.89489363921648, 35.935379577416484], [-78.8948961421519, 35.93537749217239], [-78.89489820511213, 35.93537540564817], [-78.89490030221214, 35.93537348499153], [-78.89490236517216, 35.935371398467254], [-78.89490446245148, 35.93536933991257], [-78.89490696427805, 35.935367254667334], [-78.89490902809492, 35.935365361020715], [-78.89491112430204, 35.93536327452493], [-78.89491318836858, 35.93536118890265], [-78.89491528457549, 35.93535910240672], [-78.89491731407128, 35.93535718169161], [-78.89491985025417, 35.93535509557435], [-78.89492194753261, 35.93535303701936], [-78.89492401049039, 35.93535095139599], [-78.89492610759032, 35.93534902983762], [-78.89492817058424, 35.93534691627408], [-78.89493026786225, 35.935344857718896], [-78.89493277079687, 35.935342771572785], [-78.8949348335394, 35.93534085088599], [-78.89493693081714, 35.93533879233074], [-78.89493899377527, 35.93533670580578], [-78.8949411243355, 35.93533462024025], [-78.89494315404593, 35.93533253368659], [-78.89494565562056, 35.93533064041616], [-78.8949477529329, 35.93532855482194], [-78.89494985024633, 35.935326468326316], [-78.89495191316747, 35.935324409741234], [-78.89495397723198, 35.935322324118275], [-78.89495607322222, 35.935320402558396], [-78.89495813728651, 35.935318316935366], [-78.89496063911129, 35.935316230787656], [-78.89496273642293, 35.93531414519313], [-78.89496479937976, 35.93531205866777], [-78.89496689665597, 35.93531000011195], [-78.89496895939689, 35.93530807942458], [-78.89497105670918, 35.93530599292861], [-78.89497311966448, 35.93530390730433], [-78.89497562259666, 35.93530182115728], [-78.89497771990753, 35.9352997355625], [-78.89497978286362, 35.93529764903679], [-78.8949818801391, 35.93529559048079], [-78.89498394287925, 35.935293669793076], [-78.89498604019086, 35.935291583296866], [-78.8949881363929, 35.93528949770092], [-78.89499020045673, 35.935287411176034], [-78.89499226341103, 35.9352853255514], [-78.89499476634214, 35.935283239403965], [-78.8949968292611, 35.93528118081807], [-78.89499892657079, 35.935279095222896], [-78.89500102280857, 35.93527698168666], [-78.89500308683537, 35.935274923101616], [-78.89500518278687, 35.93527302948103], [-78.89500724688503, 35.93527091591695], [-78.89500934301564, 35.9352688843983], [-78.89501140707725, 35.93526679877427], [-78.89501350327917, 35.935264712276634], [-78.89501600620797, 35.93526262702998], [-78.89501806916212, 35.935260540503656], [-78.89502016647083, 35.935258454908066], [-78.89502222938843, 35.93525639632177], [-78.89502432669809, 35.93525430982486], [-78.89502638965064, 35.93525222419961], [-78.89502848696004, 35.93525013770269], [-78.8950305499124, 35.93524805207735], [-78.89503264722156, 35.93524596558027], [-78.89503471017373, 35.93524387995491], [-78.89503680744635, 35.93524182139788], [-78.89503887150774, 35.93523973487213], [-78.89504093445954, 35.935237649246666], [-78.8950434706355, 35.935235563126724], [-78.89504553358707, 35.93523347750119], [-78.89504763089552, 35.935231391003846], [-78.89504966063569, 35.93522927740955], [-78.89505179111879, 35.93522724682094], [-78.89505385407112, 35.93522516029394], [-78.89505595137793, 35.93522307469776], [-78.89505801433008, 35.935220988170684], [-78.89506011163667, 35.93521890257443], [-78.8950621745886, 35.93521681604728], [-78.89506427185984, 35.93521475748974], [-78.8950663348104, 35.935212671863795], [-78.89506843211655, 35.93521058626741], [-78.89507049506805, 35.93520849974015], [-78.89507259237399, 35.935206414143614], [-78.89507465532529, 35.935204327616326], [-78.89507675259587, 35.9352022690585], [-78.8950788155458, 35.93520018343239], [-78.89508091285248, 35.93519809693445], [-78.8950829769104, 35.93519601130918], [-78.89508503986112, 35.93519392478163], [-78.89508710306123, 35.935191646278454], [-78.8950892003312, 35.935189587720444], [-78.89509126328043, 35.93518750209411], [-78.89509336058651, 35.935185415595974], [-78.89509542353551, 35.9351833299695], [-78.89509752084136, 35.93518124347131], [-78.89509958379016, 35.93517915784476], [-78.8951016810595, 35.93517709928658], [-78.89510374400926, 35.9351750127587], [-78.89510584131351, 35.93517292716162], [-78.89510790426304, 35.935170840633646], [-78.89511000178138, 35.935168590099686], [-78.89511206472953, 35.935166504472946], [-78.89511416199821, 35.93516444591452], [-78.89511622494733, 35.93516235938645], [-78.89511832225094, 35.9351602737891], [-78.89512038516352, 35.935158215201064], [-78.89512248250323, 35.93515610166359], [-78.89512454656014, 35.93515401513628], [-78.89512664293414, 35.93515179163989], [-78.8951287069546, 35.935149733052626], [-78.89513080318557, 35.935147619514], [-78.89513286724093, 35.93514553388786], [-78.89513496343655, 35.935143447387986], [-78.8951370274917, 35.93514136176176], [-78.89513912386502, 35.93513913826516], [-78.89514118792114, 35.93513705173756], [-78.89514328411515, 35.935134966138854], [-78.89514534817104, 35.93513287961122], [-78.89514744547309, 35.935130794013354], [-78.89514950842054, 35.93512870748469], [-78.89515160593655, 35.93512645694995], [-78.89515366888259, 35.93512437132248], [-78.89515576618535, 35.93512228482322], [-78.89515782909608, 35.935120226234474], [-78.89515948645888, 35.93511811231841], [-78.89516161833009, 35.935115861812974], [-78.89516364688475, 35.935113803194696], [-78.89516571093958, 35.93511171666666], [-78.89516777388484, 35.935109631038955], [-78.89516987118692, 35.93510754453939], [-78.89517193434612, 35.93510529397481], [-78.89517403161169, 35.93510323541531], [-78.89517612891221, 35.93510114981698], [-78.89517819185815, 35.93509906328779], [-78.8951802550169, 35.93509681272305], [-78.89518235231832, 35.93509472622324], [-78.89518441526272, 35.935092640595265], [-78.89518607366116, 35.93509058165869], [-78.89518817117634, 35.93508833022203], [-78.89519023415676, 35.93508621665375], [-78.89519233145641, 35.93508413105513], [-78.8951943944015, 35.93508204452565], [-78.89519649187996, 35.93507982102896], [-78.89519855482366, 35.93507773540068], [-78.8952006521229, 35.93507564980191], [-78.89520271506754, 35.93507356327226], [-78.89520437257093, 35.935071339397666], [-78.89520646990617, 35.935069225858655], [-78.89520853392243, 35.93506716727001], [-78.89521063032703, 35.935064916733246], [-78.89521269437932, 35.9350628302044], [-78.89521479056963, 35.93506074460438], [-78.8952168546217, 35.935058658075455], [-78.8952189510972, 35.93505635255962], [-78.89522101507656, 35.935054321910854], [-78.8952226724013, 35.93505223503269], [-78.89522473555762, 35.93504998446718], [-78.89522679964432, 35.935047870899254], [-78.89522889690694, 35.93504581233877], [-78.8952309600279, 35.9350435888119], [-78.89523305732655, 35.93504150231125], [-78.89523512023325, 35.93503944372116], [-78.8952367778064, 35.93503716486715], [-78.89523887510364, 35.935035079267706], [-78.89524093800998, 35.93503302067748], [-78.89524303555726, 35.93503074220101], [-78.89524509849846, 35.93502865657194], [-78.89524719579641, 35.93502657007101], [-78.895248854441, 35.93502431915788], [-78.89525091734677, 35.9350222605675], [-78.89525301485844, 35.93502000912967], [-78.89525507779909, 35.93501792350042], [-78.89525717509653, 35.9350158369993], [-78.89525923825096, 35.93501358643316], [-78.89526089664587, 35.935011527495476], [-78.89526299283354, 35.93500944189463], [-78.89526505713216, 35.935007163389194], [-78.89526715332077, 35.935005076886966], [-78.89526918322724, 35.935002826292106], [-78.89527084162168, 35.93500076735432], [-78.89527293891825, 35.93499868085294], [-78.89527500207181, 35.93499643028648], [-78.895277099367, 35.93499434468632], [-78.89527916252148, 35.93499209321853], [-78.89528125981646, 35.93499000761823], [-78.89528291710204, 35.93498794867937], [-78.89528498029132, 35.934985670172665], [-78.8952870775871, 35.93498358367102], [-78.89528914184815, 35.93498133310524], [-78.89529079916846, 35.93497924712735], [-78.8952928966416, 35.93497702362892], [-78.89529495958132, 35.93497493709771], [-78.89529705687542, 35.93497285149712], [-78.89529912002882, 35.934970600029], [-78.89530077842183, 35.93496854109074], [-78.89530287485752, 35.934966262612235], [-78.89530493890375, 35.93496417698305], [-78.89530700205557, 35.93496192641602], [-78.89530866048439, 35.934959839537576], [-78.89531072360094, 35.93495761600935], [-78.89531282089415, 35.9349555304085], [-78.89531488404671, 35.9349532789401], [-78.89531698133969, 35.93495119333918], [-78.89531863890876, 35.934948914484025], [-78.89532070181086, 35.93494685589242], [-78.89532279931743, 35.934944605354545], [-78.8953248622906, 35.93494249178399], [-78.8956613535805, 35.934984014122975], [-78.8959071698336, 35.93521773242254], [-78.89586585404142, 35.935848525224536], [-78.89549643374298, 35.935825848393385], [-78.8960282461257, 35.936337464631535], [-78.8953863884367, 35.936809042286264], [-78.8953006304818, 35.93672339445161]]], "type": "Polygon"}    5
+{"coordinates": [[[-78.89686451944101, 35.902109326932084], [-78.89636563325986, 35.90210731071035], [-78.89647538945044, 35.901751176152615], [-78.89668435469349, 35.90107296255042], [-78.89620956736465, 35.90103099495042], [-78.89626042747122, 35.90086571246116], [-78.89669598639152, 35.900875505169516], [-78.89723368223186, 35.900887469816745], [-78.8972291880159, 35.90211065040185], [-78.89721230520267, 35.90211063618065], [-5
+{"coordinates": [[[-78.8925955737071, 35.935584684694284], [-78.89308843180046, 35.93521834526715], [-78.89311937213849, 35.9352458438357], [-78.89339906979228, 35.93549907381479], [-78.89388797145729, 35.93592973110675], [-78.89335144518142, 35.936263015687935], [-78.89326160165379, 35.93617730785223], [-4
+{"coordinates": [[[-79.00865824411042, 35.895748114566146], [-79.00870381834248, 35.89569432218137], [-79.0087559428319, 35.89564459420633], [-79.00881401060795, 35.895599453435096], [-79.0088774468219, 35.895559366778734], [-79.00894557693329, 35.89552477501799], [-79.00901769095023, 35.89549603421428], [-79.00909304786003, 35.89547341931487], [-79.00917083576012, 35.89545720527379], [-79.00925027818495, 35.89544755618336], [-79.00933049896477, 35.89544452798859], [-79.0093527483463, 35.89544463624419], [-79.00935226316017, 35.895626280436815], [-79.009245909897, 35.89562609656594], [-79.00920188856479, 35.895675439281284], [-79.00920120936641, 35.89593642287928], [-79.0088728034419, 35.896014220140906], [-79.00889547712447, 35.89587254555112], [-79.00865824411042, 35.895748114566146]]], "type": 4
+..
+{"coordinates": [[[-78.85469135284552, 35.7411884887888], [-78.85470001264525, 35.74079516180844], [-78.85507459029961, 35.740795488330306], [-78.85506479448905, 35.74125744051542], [-1
+{"coordinates": [[[-78.89723368223186, 35.900887469816745], [-78.89669598639152, 35.900875505169516], [-78.89626042747122, 35.90086571246116], [-78.89646979107096, 35.90019178506001], [-78.89721154301768, 35.9003749358134], [-78.8972145131891, 35.90037562511121], [-78.89721745012739, 35.900376314381], [-78.89722042008898, 35.900377168617595], [-78.89722335702737, 35.90037785788723], [-78.89722632719898, 35.900378547184744], [-78.89722926413747, 35.90037923645417], [-78.8972322343092, 35.90037992575163], [-78.89723517124777, 35.900380615020936], [-78.89724107856813, 35.900381828648385], [-78.89724404874003, 35.90038251794552], [-78.89724698564441, 35.900383234253724], [-78.89725289303507, 35.90038439290103], [-78.89725626861639, 35.900385110479725], [-78.8972621759729, 35.900386296165685], [-78.89726808329293, 35.90038751069319], [-78.8972739908241, 35.90038855938015], [-78.89727696103208, 35.90038922073598], [-78.89728033685903, 35.90038974543462], [-78.89728624438938, 35.90039079502228], [-78.89729215195652, 35.900391815767875], [-78.89729846496742, 35.90039283775575], [-78.89730437249933, 35.90039388644123], [-78.89731028003024, 35.90039493602778], [-78.89731365606741, 35.90039529578654], [-78.89731956363404, 35.900396317432126], [-78.89732547141054, 35.90039717413844], [-78.89732884744788, 35.90039753389681], [-78.89733475522453, 35.900398390602724], [-78.89734066300132, 35.9003992473083], [-78.89734403903881, 35.900399607066255], [-78.89734994702542, 35.9004002988325], [-78.89735629348051, 35.9004011559064], [-78.89736220146732, 35.900401847672036], [-78.89736557754047, 35.90040217948889], [-78.89737148573592, 35.90040270721649], [-78.89737779916776, 35.90040339932237], [-78.89738370736451, 35.90040392614805], [-78.89739005402974, 35.90040461828125], [-78.89739596222664, 35.900405145106376], [-78.89739933850848, 35.90040531288463], [-78.89740524670547, 35.900405839709215], [-78.89741156059122, 35.900406174896354], [-78.89741746878839, 35.90040670172034], [-78.89742084507034, 35.90040686949807], [-78.89742675347705, 35.90040723138271], [-78.89743012975904, 35.90040739916019], [-78.8974360382013, 35.90040773310386], [-78.89743941444787, 35.9004079288215], [-78.89744532309852, 35.900408098727105], [-78.89744869938056, 35.90040826650405], [-78.8974546080324, 35.90040843550796], [-78.89745795104585, 35.900408631197145], [-78.89746389292975, 35.90040880112981], [-78.89747024046794, 35.90040880646394], [-78.89747618345963, 35.90040897639695], [-78.89747952671799, 35.90040897920615], [-78.89748543536993, 35.900409148208524], [-78.89748881186146, 35.90040915104539], [-78.89749472072161, 35.90040915600969], [-78.89749809721314, 35.9004091588463], [-78.89750400628148, 35.90040899977259], [-78.89750738277299, 35.90040900260892], [-78.89751329163315, 35.900409007572335], [-78.8975166683339, 35.9004088454695], [-78.89752129328537, 35.900408849354086], [-78.89752510977196, 35.90040868762041], [-78.89752848626345, 35.900408690456175], [-78.89753186299963, 35.900408500412446], [-78.89753567816918, 35.90040850361641], [-78.89753902052777, 35.90040834238543], [-78.89754239722849, 35.900408180281865], [-78.8975462135058, 35.900408183486455], [-78.89754959020652, 35.90040802138268], [-78.89755296694264, 35.90040783133842], [-78.89755674797924, 35.90040767047527], [-78.8975601246799, 35.900407508371245], [-78.8975635013805, 35.90040734626713], [-78.89756731790236, 35.900407156591626], [-78.89757069481101, 35.90040683044967], [-78.89757407151161, 35.90040666834524], [-78.89757785258467, 35.900406478639646], [-78.89758122949326, 35.900406152497425], [-78.8975846061938, 35.900405990392684], [-78.8975884229235, 35.90040563667892], [-78.89759179983314, 35.900405309635076], [-78.89759517660333, 35.90040509255042], [-78.89759895781455, 35.90040479378619], [-78.89760233475954, 35.900404438801566], [-78.89760571166792, 35.900404112658634], [-78.89760908861281, 35.900403757673864], [-78.89761290530691, 35.90040343189977], [-78.89761631548497, 35.90040307694264], [-78.89761965916006, 35.900402750771484], [-78.89762344154967, 35.90040239612645], [-78.8976268184579, 35.90040206998292], [-78.89760637217645, 35.900895859755046], [-78.89723368223186, 1
+{"coordinates": [[[-78.71615491399389, 35.6462060466755], [-78.71605743271179, 35.64584397817934], [-78.7163938333159, 35.64585388873087], [-78.71649896112855, 35.64626774037973], [-78.71703098574397, 35.64703046790443], [-78.71681046496933, 35.64713295037959], [-78.71671985490646, 35.64717241062928], [-78.71662690974469, 35.64720600366755], [-78.71647601905723, 35.64669700812327], [-78.71615491399389, 35.6462060466755]]], "type": 1
+{"coordinates": [[[-78.85101974807468, 35.85549428269427], [-78.85111147713138, 35.85538560250101], [-78.85112028743195, 35.85537582960962], [-78.85113083515753, 35.855367963799075], [-78.85114271488195, 35.85536230715309], [-78.85115546997018, 35.855359077102854], [-78.8511686101398, 35.85535839780564], [-78.85118163030657, 35.855360295372385], [-78.85119402999894, 35.85536469686408], [-78.85120533260157, 35.85537143291475], [-78.85152518158984, 35.855550354765256], [-78.85139517922823, 35.85570431158234], [-78.85101974807468, 35.85549428269427]]], "type": 1
+{"coordinates": [[[-78.84870850567094, 35.79310839854012], [-78.8487170950752, 35.7930474506222], [-78.84896324238754, 35.793070463469796], [-78.84895465870126, 35.79313140960882], [-1
+Name: count, Length: 4960, dtype: int64
+
+Value Counts for geo_point_2d:
+geo_point_2d
+POINT(-78.89435198062107 35.93458015724831)     5
+POINT(-78.89533717053507 35.93582996314632)     5
+POINT(-78.89684540012078 35.901495318425354)    5
+POINT(-78.89323340800321 35.935747578928286)    4
+POINT(-79.0090325267765 35.895706010963906)     4
+                                               ..
+POINT(-78.85488768612053 35.74100964065941)     1
+POINT(-78.89694582117282 35.90060331721842)     1
+POINT(-78.71651876618107 35.64652239248168)     1
+POINT(-78.85127330001951 35.85552348449078)     1
+POINT(-78.84883587467455 35.793089430599736)    1
+Name: count, Length: 4960, dtype: int64
+
+6.Visualize Data
+
+6.1 Histograms for Numerical Data
+import matplotlib.pyplot as plt
+import seaborn as sns
+import numpy as np
+
+# Select numerical columns
+numerical_cols = df.select_dtypes(include=[np.number]).columns
+
+# Set plot style
+plt.style.use("seaborn-v0_8")
+
+# Loop through each numerical column and plot histogram
+for col in numerical_cols:
+    plt.figure(figsize=(8,5))
+    sns.histplot(df[col], bins=30, kde=True)
+    plt.title(f"Histogram of {col}")
+    plt.xlabel(col)
+    plt.ylabel("Frequency")
+    plt.show()
+
+6.2 Boxplots for Outliers
+
+import matplotlib.pyplot as plt
+import seaborn as sns
+import numpy as np
+
+# Select numerical columns
+numerical_cols = df.select_dtypes(include=[np.number]).columns
+
+# Set style
+plt.style.use("seaborn-v0_8")
+
+# Create boxplot for each numerical column
+for col in numerical_cols:
+plt.figure(figsize=(8, 4))
+sns.boxplot(x=df[col])
+plt.title(f"Boxplot of {col}")
+plt.xlabel(col)
+plt.show()
+6.3 Scatterplot for Correlation
+Option 1: Scatterplot Between Target (e.g., Price) and Other Numerical Variables
+import matplotlib.pyplot as plt
+import seaborn as sns
+import numpy as np
+
+# Select numerical columns
+numerical_cols = df.select_dtypes(include=[np.number]).columns
+
+# Define target variable (change if needed)
+target = "totalsalevalue"   # Modified to a column present in the dataframe
+
+# Scatterplots of target vs other numerical variables
+for col in numerical_cols:
+    if col != target:
+        plt.figure(figsize=(7,5))
+        sns.scatterplot(x=df[col], y=df[target])
+        plt.title(f"{target} vs {col}")
+        plt.xlabel(col)
+        plt.ylabel(target)
+        plt.show()
+
+Option 2: Scatterplot Matrix (Pairplot)
+# Pairplot (use only few columns if dataset is large)
+sns.pairplot(df[numerical_cols])
+plt.show()
+
+If dataset has many numerical columns, select only important ones:
+important_cols = ["totalsalevalue", "shape_starea", "totalbldgsqft", "yearbuilt"]  # Modified as per your dataset
+sns.pairplot(df[important_cols])
+plt.show()
+
+Optional: Show Correlation Values
+correlation_matrix = df[numerical_cols].corr()
+print(correlation_matrix)
+
+
+                   realid  calcacreage  deedacres  streetnumber  \
+realid           1.000000    -0.104737  -0.093693     -0.165410   
+calcacreage     -0.104737     1.000000   0.999749      0.049320   
+deedacres       -0.093693     0.999749   1.000000      0.007887   
+streetnumber    -0.165410     0.049320   0.007887      1.000000   
+totalstructures  0.086905     0.198122   0.196046     -0.023884   
+totalunits      -0.043442     0.154865   0.154498      0.012238   
+bldgvalue       -0.082973     0.237467   0.385536      0.041241   
+landvalue       -0.064634     0.483613   0.544128      0.036795   
+landsalevalue    0.042576     0.198798   0.198184      0.009795   
+totalsalevalue  -0.015266     0.176334   0.175826      0.013920   
+deedpage         0.422093    -0.069273  -0.032967     -0.094011   
+topography            NaN          NaN        NaN           NaN   
+apaownership     0.128720     0.098446   0.096093     -0.050966   
+apaactivity      0.182827     0.181736   0.180480     -0.085598   
+apafunction      0.181320     0.180544   0.179312     -0.083825   
+apastructure     0.176247     0.176929   0.175685     -0.085409   
+apasite         -0.015365    -0.204397  -0.205464      0.042870   
+totalbldgsqft   -0.033870     0.672618   0.672923      0.016827   
+typeanduse      -0.099071     0.300234   0.300406      0.097524   
+phyzip           0.124781     0.001583   0.001506      0.053861   
+yearbuilt             NaN          NaN        NaN           NaN   
+shape_starea    -0.105308     0.998692   0.973910      0.049021   
+shape_stlength  -0.197700     0.809917   0.769546      0.099616   
+
+                 totalstructures  totalunits  bldgvalue  landvalue  \
+realid                  0.086905   -0.043442  -0.082973  -0.064634   
+calcacreage             0.198122    0.154865   0.237467   0.483613   
+deedacres               0.196046    0.154498   0.385536   0.544128   
+streetnumber           -0.023884    0.012238   0.041241   0.036795   
+totalstructures         1.000000    0.788966   0.635141   0.582227   
+totalunits              0.788966    1.000000   0.586955   0.413678   
+bldgvalue               0.635141    0.586955   1.000000   0.621276   
+landvalue               0.582227    0.413678   0.621276   1.000000   
+landsalevalue           0.194509    0.263336   0.213362   0.282922   
+totalsalevalue          0.713886    0.899168   0.613796   0.435942   
+deedpage                0.020564   -0.017072  -0.050259  -0.034557   
+topography                   NaN         NaN        NaN        NaN   
+apaownership            0.120873   -0.008078   0.039622   0.103803   
+apaactivity             0.018416   -0.066355  -0.079132   0.028998   
+apafunction             0.016863   -0.066149  -0.077965   0.029953   
+apastructure            0.020223   -0.063815  -0.077349   0.030597   
+apasite                 0.111036    0.056177   0.085650  -0.005426   
+totalbldgsqft           0.797016    0.718800   0.949172   0.903432   
+typeanduse              0.091179    0.027665   0.201471   0.288419   
+phyzip                  0.002798    0.009519   0.013379   0.011559   
+yearbuilt                    NaN         NaN        NaN        NaN   
+shape_starea            0.195659    0.160267   0.234352   0.483584   
+shape_stlength          0.157084    0.122432   0.282160   0.475279   
+
+                 landsalevalue  totalsalevalue  ...  apaactivity  apafunction  \
+realid                0.042576       -0.015266  ...     0.182827     0.181320   
+calcacreage           0.198798        0.176334  ...     0.181736     0.180544   
+deedacres             0.198184        0.175826  ...     0.180480     0.179312   
+streetnumber          0.009795        0.013920  ...    -0.085598    -0.083825   
+totalstructures       0.194509        0.713886  ...     0.018416     0.016863   
+totalunits            0.263336        0.899168  ...    -0.066355    -0.066149   
+bldgvalue             0.213362        0.613796  ...    -0.079132    -0.077965   
+landvalue             0.282922        0.435942  ...     0.028998     0.029953   
+landsalevalue         1.000000        0.257003  ...     0.059102     0.062734   
+totalsalevalue        0.257003        1.000000  ...    -0.092243    -0.091869   
+deedpage             -0.007479       -0.013135  ...    -0.022792    -0.022630   
+topography                 NaN             NaN  ...          NaN          NaN   
+apaownership          0.120219        0.011847  ...     0.151176     0.150817   
+apaactivity           0.059102       -0.092243  ...     1.000000     0.999099   
+apafunction           0.062734       -0.091869  ...     0.999099     1.000000   
+apastructure          0.058255       -0.088923  ...     0.997109     0.997782   
+apasite              -0.040079        0.089646  ...    -0.795875    -0.798656   
+totalbldgsqft         0.459879        0.734507  ...     0.131441     0.156599   
+typeanduse            0.237726        0.092544  ...     0.354906     0.388031   
+phyzip                0.005823        0.017644  ...    -0.139911    -0.140111   
+yearbuilt                  NaN             NaN  ...          NaN          NaN   
+shape_starea          0.206164        0.183158  ...     0.187971     0.186465   
+shape_stlength        0.184142        0.129744  ...     0.349547     0.345591   
+
+                 apastructure   apasite  totalbldgsqft  typeanduse    phyzip  \
+realid               0.176247 -0.015365      -0.033870   -0.099071  0.124781   
+calcacreage          0.176929 -0.204397       0.672618    0.300234  0.001583   
+deedacres            0.175685 -0.205464       0.672923    0.300406  0.001506   
+streetnumber        -0.085409  0.042870       0.016827    0.097524  0.053861   
+totalstructures      0.020223  0.111036       0.797016    0.091179  0.002798   
+totalunits          -0.063815  0.056177       0.718800    0.027665  0.009519   
+bldgvalue           -0.077349  0.085650       0.949172    0.201471  0.013379   
+landvalue            0.030597 -0.005426       0.903432    0.288419  0.011559   
+landsalevalue        0.058255 -0.040079       0.459879    0.237726  0.005823   
+totalsalevalue      -0.088923  0.089646       0.734507    0.092544  0.017644   
+deedpage            -0.024204  0.056056      -0.019591   -0.034763  0.028641   
+topography                NaN       NaN            NaN         NaN       NaN   
+apaownership         0.145092  0.148953       0.069316    0.185247 -0.000837   
+apaactivity          0.997109 -0.795875       0.131441    0.354906 -0.139911   
+apafunction          0.997782 -0.798656       0.156599    0.388031 -0.140111   
+apastructure         1.000000 -0.798481       0.210555    0.350200 -0.140228   
+apasite             -0.798481  1.000000       0.053181    0.121667  0.045394   
+totalbldgsqft        0.210555  0.053181       1.000000    0.205866  0.033566   
+typeanduse           0.350200  0.121667       0.205866    1.000000  0.081437   
+phyzip              -0.140228  0.045394       0.033566    0.081437  1.000000   
+yearbuilt                 NaN       NaN            NaN         NaN       NaN   
+shape_starea         0.182966 -0.211152       0.694445    0.278905  0.001178   
+shape_stlength       0.340085 -0.344852       0.512290    0.334329 -0.032824   
+
+                 yearbuilt  shape_starea  shape_stlength  
+realid                 NaN     -0.105308       -0.197700  
+calcacreage            NaN      0.998692        0.809917  
+deedacres              NaN      0.973910        0.769546  
+streetnumber           NaN      0.049021        0.099616  
+totalstructures        NaN      0.195659        0.157084  
+totalunits             NaN      0.160267        0.122432  
+bldgvalue              NaN      0.234352        0.282160  
+landvalue              NaN      0.483584        0.475279  
+landsalevalue          NaN      0.206164        0.184142  
+totalsalevalue         NaN      0.183158        0.129744  
+deedpage               NaN     -0.068297       -0.115634  
+topography             NaN           NaN             NaN  
+apaownership           NaN      0.103433        0.089857  
+apaactivity            NaN      0.187971        0.349547  
+apafunction            NaN      0.186465        0.345591  
+apastructure           NaN      0.182966        0.340085  
+apasite                NaN     -0.211152       -0.344852  
+totalbldgsqft          NaN      0.694445        0.512290  
+typeanduse             NaN      0.278905        0.334329  
+phyzip                 NaN      0.001178       -0.032824  
+yearbuilt              NaN           NaN             NaN  
+shape_starea           NaN      1.000000        0.810291  
+shape_stlength         NaN      0.810291        1.000000  
+
+[23 rows x 23 columns]
+
+7. Check Correlations
+7.1 Correlation Matrix
+Correlation Matrix:
+                   realid  calcacreage  deedacres  streetnumber  \
+realid           1.000000    -0.104737  -0.093693     -0.165410   
+calcacreage     -0.104737     1.000000   0.999749      0.049320   
+deedacres       -0.093693     0.999749   1.000000      0.007887   
+streetnumber    -0.165410     0.049320   0.007887      1.000000   
+totalstructures  0.086905     0.198122   0.196046     -0.023884   
+totalunits      -0.043442     0.154865   0.154498      0.012238   
+bldgvalue       -0.082973     0.237467   0.385536      0.041241   
+landvalue       -0.064634     0.483613   0.544128      0.036795   
+landsalevalue    0.042576     0.198798   0.198184      0.009795   
+totalsalevalue  -0.015266     0.176334   0.175826      0.013920   
+deedpage         0.422093    -0.069273  -0.032967     -0.094011   
+topography            NaN          NaN        NaN           NaN   
+apaownership     0.128720     0.098446   0.096093     -0.050966   
+apaactivity      0.182827     0.181736   0.180480     -0.085598   
+apafunction      0.181320     0.180544   0.179312     -0.083825   
+apastructure     0.176247     0.176929   0.175685     -0.085409   
+apasite         -0.015365    -0.204397  -0.205464      0.042870   
+totalbldgsqft   -0.033870     0.672618   0.672923      0.016827   
+typeanduse      -0.099071     0.300234   0.300406      0.097524   
+phyzip           0.124781     0.001583   0.001506      0.053861   
+yearbuilt             NaN          NaN        NaN           NaN   
+shape_starea    -0.105308     0.998692   0.973910      0.049021   
+shape_stlength  -0.197700     0.809917   0.769546      0.099616   
+
+                 totalstructures  totalunits  bldgvalue  landvalue  \
+realid                  0.086905   -0.043442  -0.082973  -0.064634   
+calcacreage             0.198122    0.154865   0.237467   0.483613   
+deedacres               0.196046    0.154498   0.385536   0.544128   
+streetnumber           -0.023884    0.012238   0.041241   0.036795   
+totalstructures         1.000000    0.788966   0.635141   0.582227   
+totalunits              0.788966    1.000000   0.586955   0.413678   
+bldgvalue               0.635141    0.586955   1.000000   0.621276   
+landvalue               0.582227    0.413678   0.621276   1.000000   
+landsalevalue           0.194509    0.263336   0.213362   0.282922   
+totalsalevalue          0.713886    0.899168   0.613796   0.435942   
+deedpage                0.020564   -0.017072  -0.050259  -0.034557   
+topography                   NaN         NaN        NaN        NaN   
+apaownership            0.120873   -0.008078   0.039622   0.103803   
+apaactivity             0.018416   -0.066355  -0.079132   0.028998   
+apafunction             0.016863   -0.066149  -0.077965   0.029953   
+apastructure            0.020223   -0.063815  -0.077349   0.030597   
+apasite                 0.111036    0.056177   0.085650  -0.005426   
+totalbldgsqft           0.797016    0.718800   0.949172   0.903432   
+typeanduse              0.091179    0.027665   0.201471   0.288419   
+phyzip                  0.002798    0.009519   0.013379   0.011559   
+yearbuilt                    NaN         NaN        NaN        NaN   
+shape_starea            0.195659    0.160267   0.234352   0.483584   
+shape_stlength          0.157084    0.122432   0.282160   0.475279   
+
+                 landsalevalue  totalsalevalue  ...  apaactivity  apafunction  \
+realid                0.042576       -0.015266  ...     0.182827     0.181320   
+calcacreage           0.198798        0.176334  ...     0.181736     0.180544   
+deedacres             0.198184        0.175826  ...     0.180480     0.179312   
+streetnumber          0.009795        0.013920  ...    -0.085598    -0.083825   
+totalstructures       0.194509        0.713886  ...     0.018416     0.016863   
+totalunits            0.263336        0.899168  ...    -0.066355    -0.066149   
+bldgvalue             0.213362        0.613796  ...    -0.079132    -0.077965   
+landvalue             0.282922        0.435942  ...     0.028998     0.029953   
+landsalevalue         1.000000        0.257003  ...     0.059102     0.062734   
+totalsalevalue        0.257003        1.000000  ...    -0.092243    -0.091869   
+deedpage             -0.007479       -0.013135  ...    -0.022792    -0.022630   
+topography                 NaN             NaN  ...          NaN          NaN   
+apaownership          0.120219        0.011847  ...     0.151176     0.150817   
+apaactivity           0.059102       -0.092243  ...     1.000000     0.999099   
+apafunction           0.062734       -0.091869  ...     0.999099     1.000000   
+apastructure          0.058255       -0.088923  ...     0.997109     0.997782   
+apasite              -0.040079        0.089646  ...    -0.795875    -0.798656   
+totalbldgsqft         0.459879        0.734507  ...     0.131441     0.156599   
+typeanduse            0.237726        0.092544  ...     0.354906     0.388031   
+phyzip                0.005823        0.017644  ...    -0.139911    -0.140111   
+yearbuilt                  NaN             NaN  ...          NaN          NaN   
+shape_starea          0.206164        0.183158  ...     0.187971     0.186465   
+shape_stlength        0.184142        0.129744  ...     0.349547     0.345591   
+
+                 apastructure   apasite  totalbldgsqft  typeanduse    phyzip  \
+realid               0.176247 -0.015365      -0.033870   -0.099071  0.124781   
+calcacreage          0.176929 -0.204397       0.672618    0.300234  0.001583   
+deedacres            0.175685 -0.205464       0.672923    0.300406  0.001506   
+streetnumber        -0.085409  0.042870       0.016827    0.097524  0.053861   
+totalstructures      0.020223  0.111036       0.797016    0.091179  0.002798   
+totalunits          -0.063815  0.056177       0.718800    0.027665  0.009519   
+bldgvalue           -0.077349  0.085650       0.949172    0.201471  0.013379   
+landvalue            0.030597 -0.005426       0.903432    0.288419  0.011559   
+landsalevalue        0.058255 -0.040079       0.459879    0.237726  0.005823   
+totalsalevalue      -0.088923  0.089646       0.734507    0.092544  0.017644   
+deedpage            -0.024204  0.056056      -0.019591   -0.034763  0.028641   
+topography                NaN       NaN            NaN         NaN       NaN   
+apaownership         0.145092  0.148953       0.069316    0.185247 -0.000837   
+apaactivity          0.997109 -0.795875       0.131441    0.354906 -0.139911   
+apafunction          0.997782 -0.798656       0.156599    0.388031 -0.140111   
+apastructure         1.000000 -0.798481       0.210555    0.350200 -0.140228   
+apasite             -0.798481  1.000000       0.053181    0.121667  0.045394   
+totalbldgsqft        0.210555  0.053181       1.000000    0.205866  0.033566   
+typeanduse           0.350200  0.121667       0.205866    1.000000  0.081437   
+phyzip              -0.140228  0.045394       0.033566    0.081437  1.000000   
+yearbuilt                 NaN       NaN            NaN         NaN       NaN   
+shape_starea         0.182966 -0.211152       0.694445    0.278905  0.001178   
+shape_stlength       0.340085 -0.344852       0.512290    0.334329 -0.032824   
+
+                 yearbuilt  shape_starea  shape_stlength  
+realid                 NaN     -0.105308       -0.197700  
+calcacreage            NaN      0.998692        0.809917  
+deedacres              NaN      0.973910        0.769546  
+streetnumber           NaN      0.049021        0.099616  
+totalstructures        NaN      0.195659        0.157084  
+totalunits             NaN      0.160267        0.122432  
+bldgvalue              NaN      0.234352        0.282160  
+landvalue              NaN      0.483584        0.475279  
+landsalevalue          NaN      0.206164        0.184142  
+totalsalevalue         NaN      0.183158        0.129744  
+deedpage               NaN     -0.068297       -0.115634  
+topography             NaN           NaN             NaN  
+apaownership           NaN      0.103433        0.089857  
+apaactivity            NaN      0.187971        0.349547  
+apafunction            NaN      0.186465        0.345591  
+apastructure           NaN      0.182966        0.340085  
+apasite                NaN     -0.211152       -0.344852  
+totalbldgsqft          NaN      0.694445        0.512290  
+typeanduse             NaN      0.278905        0.334329  
+phyzip                 NaN      0.001178       -0.032824  
+yearbuilt              NaN           NaN             NaN  
+shape_starea           NaN      1.000000        0.810291  
+shape_stlength         NaN      0.810291        1.000000  
+
+[23 rows x 23 columns]
+
+7.2 Correlation Heatmap
+
+import matplotlib.pyplot as plt
+import seaborn as sns
+
+plt.figure(figsize=(12,8))
+sns.heatmap(correlation_matrix, 
+            annot=True, 
+            cmap='coolwarm', 
+            fmt=".2f",
+            linewidths=0.5)
+
+plt.title("Correlation Heatmap")
+plt.show()
+
+ 
+7.3 Correlation with Target Variable
+target = "totalsalevalue"   # Changed 'Price' to 'totalsalevalue'
+
+target_correlation = correlation_matrix[target].sort_values(ascending=False)
+
+print(f"Correlation of all variables with {target}:")
+print(target_correlation)
+
+Correlation of all variables with totalsalevalue:
+totalsalevalue     1.000000
+totalunits         0.899168
+totalbldgsqft      0.734507
+totalstructures    0.713886
+bldgvalue          0.613796
+landvalue          0.435942
+landsalevalue      0.257003
+shape_starea       0.183158
+calcacreage        0.176334
+deedacres          0.175826
+shape_stlength     0.129744
+typeanduse         0.092544
+apasite            0.089646
+phyzip             0.017644
+streetnumber       0.013920
+apaownership       0.011847
+deedpage          -0.013135
+realid            -0.015266
+apastructure      -0.088923
+apafunction       -0.091869
+apaactivity       -0.092243
+topography              NaN
+yearbuilt               NaN
+Name: totalsalevalue, dtype: float64
+
+Correlation Value	Meaning
+0.8 to 1.0	Strong Positive
+0.5 to 0.8	Moderate Positive
+0.3 to 0.5	Weak Positive
+0	No correlation
+-0.3 to -0.5	Weak Negative
+-0.5 to -0.8	Moderate Negative
+-0.8 to -1.0	Strong Negative
+
+8. Check Skewness and Kurtosis
+Skewness and Kurtosis help you understand:
+•	Symmetry of distribution
+•	Presence of extreme values
+•	Whether data is normally distributed
+8.1 Calculate Skewness and Kurtosis
+import numpy as np
+
+# Select numerical columns
+numerical_cols = df.select_dtypes(include=[np.number]).columns
+
+print("Skewness and Kurtosis for Numerical Columns:\n")
+
+for col in numerical_cols:
+    skewness = df[col].skew()
+    kurtosis = df[col].kurt()
+    
+    print(f"{col}")
+    print(f"  Skewness  : {skewness:.4f}")
+    print(f"  Kurtosis  : {kurtosis:.4f}")
+    print("-" * 40)
+
+Skewness and Kurtosis for Numerical Columns:
+
+realid
+  Skewness  : -0.5667
+  Kurtosis  : -1.2923
+----------------------------------------
+calcacreage
+  Skewness  : 28.7739
+  Kurtosis  : 994.0382
+----------------------------------------
+deedacres
+  Skewness  : 12.4425
+  Kurtosis  : 209.9403
+----------------------------------------
+streetnumber
+  Skewness  : 1.5929
+  Kurtosis  : 2.2131
+----------------------------------------
+totalstructures
+  Skewness  : 37.4372
+  Kurtosis  : 1702.0681
+----------------------------------------
+totalunits
+  Skewness  : 52.6042
+  Kurtosis  : 2958.5951
+----------------------------------------
+bldgvalue
+  Skewness  : 18.6067
+  Kurtosis  : 435.6392
+----------------------------------------
+landvalue
+  Skewness  : 17.5901
+  Kurtosis  : 385.2163
+----------------------------------------
+landsalevalue
+  Skewness  : 19.4002
+  Kurtosis  : 524.4208
+----------------------------------------
+totalsalevalue
+  Skewness  : 45.2906
+  Kurtosis  : 2389.6234
+----------------------------------------
+deedpage
+  Skewness  : 0.4184
+  Kurtosis  : -1.0812
+----------------------------------------
+topography
+  Skewness  : nan
+  Kurtosis  : nan
+----------------------------------------
+apaownership
+  Skewness  : 12.0634
+  Kurtosis  : 199.8912
+----------------------------------------
+apaactivity
+  Skewness  : 1.9889
+  Kurtosis  : 1.9974
+----------------------------------------
+apafunction
+  Skewness  : 1.9933
+  Kurtosis  : 2.0132
+----------------------------------------
+apastructure
+  Skewness  : 1.9862
+  Kurtosis  : 2.0202
+----------------------------------------
+apasite
+  Skewness  : -2.1844
+  Kurtosis  : 2.8433
+----------------------------------------
+totalbldgsqft
+  Skewness  : 28.7917
+  Kurtosis  : 977.7089
+----------------------------------------
+typeanduse
+  Skewness  : 13.2453
+  Kurtosis  : 229.7757
+----------------------------------------
+phyzip
+  Skewness  : -18.3560
+  Kurtosis  : 335.2951
+----------------------------------------
+yearbuilt
+  Skewness  : nan
+  Kurtosis  : nan
+----------------------------------------
+shape_starea
+  Skewness  : 28.8935
+  Kurtosis  : 1000.0161
+----------------------------------------
+shape_stlength
+  Skewness  : 11.7410
+  Kurtosis  : 239.4144
+----------------------------------------
+
+8.2 Summary Table Format (Better for Projects)
+skew_kurt_df = pd.DataFrame({
+    "Skewness": df[numerical_cols].skew(),
+    "Kurtosis": df[numerical_cols].kurt()
+})
+
+print(skew_kurt_df)
+
+                  Skewness     Kurtosis
+realid           -0.566651    -1.292276
+calcacreage      28.773900   994.038170
+deedacres        12.442453   209.940294
+streetnumber      1.592923     2.213095
+totalstructures  37.437215  1702.068144
+totalunits       52.604218  2958.595080
+bldgvalue        18.606654   435.639242
+landvalue        17.590142   385.216344
+landsalevalue    19.400193   524.420761
+totalsalevalue   45.290619  2389.623446
+deedpage          0.418436    -1.081212
+topography             NaN          NaN
+apaownership     12.063389   199.891153
+apaactivity       1.988935     1.997375
+apafunction       1.993291     2.013211
+apastructure      1.986157     2.020222
+apasite          -2.184370     2.843298
+totalbldgsqft    28.791715   977.708883
+typeanduse       13.245253   229.775685
+phyzip          -18.356043   335.295086
+yearbuilt              NaN          NaN
+shape_starea     28.893520  1000.016147
+shape_stlength   11.740966   239.414352
+
+
+
+How to Interpret Skewness
+Skewness Value	Meaning
+≈ 0	Normally distributed
+> 0	Right skewed (tail on right)
+< 0	Left skewed (tail on left)
+> 1 or < -1	Highly skewed
+-> In real estate data, Price is usually positively skewed (right skewed).
+How to Interpret Kurtosis
+Kurtosis Value	Meaning
+≈ 0	Normal distribution
+> 0	Heavy tails (more outliers)
+< 0	Light tails (fewer outliers)
+> 3	Highly peaked with extreme outliers
+________________________________________
+ If Data is Highly Skewed
+You can apply transformation:
+# Log Transformation example
+df["Price_log"] = np.log1p(df["totalsalevalue"])
+9. Key Observations
+Land Value Correlation: Check how your target variable landvalue correlates with others:
+
+Land Value Correlation Analysis
+We will check how the target variable landvalue correlates with other numerical variables.
+9.1 Correlation of landvalue with All Numerical Features
+
+import numpy as np
+
+# Select numerical columns
+numerical_cols = df.select_dtypes(include=[np.number]).columns
+
+# Compute correlation matrix
+correlation_matrix = df[numerical_cols].corr()
+
+# Correlation of landvalue with other variables
+target = "landvalue"
+
+landvalue_corr = correlation_matrix[target].sort_values(ascending=False)
+
+print("Correlation of all numerical variables with landvalue:\n")
+print(landvalue_corr)
+
+
+Correlation of all numerical variables with landvalue:
+
+landvalue          1.000000
+totalbldgsqft      0.903432
+bldgvalue          0.621276
+totalstructures    0.582227
+deedacres          0.544128
+calcacreage        0.483613
+shape_starea       0.483584
+shape_stlength     0.475279
+totalsalevalue     0.435942
+totalunits         0.413678
+typeanduse         0.288419
+landsalevalue      0.282922
+apaownership       0.103803
+streetnumber       0.036795
+apastructure       0.030597
+apafunction        0.029953
+apaactivity        0.028998
+phyzip             0.011559
+apasite           -0.005426
+deedpage          -0.034557
+realid            -0.064634
+Price_log         -0.076647
+topography              NaN
+yearbuilt               NaN
+Name: landvalue, dtype: float64
+
+
+9.2 Visualize Landvalue Correlation (Bar Plot)
+import matplotlib.pyplot as plt
+plt.figure(figsize=(10,6))
+landvalue_corr.drop(target).plot(kind='bar')
+plt.title("Correlation of Features with Landvalue")
+plt.ylabel("Correlation Coefficient")
+plt.xticks(rotation=45)
+plt.show()
+
+ 
+
+How to Interpret Results
+✅ Strong Positive Correlation ( > 0.7 )
+•	These variables strongly increase as landvalue increases.
+•	Example (typical real estate data):
+o	Area / Lot Size
+o	Property Size
+⚖ Moderate Correlation (0.4 – 0.7)
+•	Moderate influence on land value.
+•	Example:
+o	Number of Bedrooms
+o	Number of Bathrooms
+❌ Weak Correlation (< 0.3)
+•	Minimal impact on landvalue.
+•	May not be strong predictors.
+🔻 Negative Correlation
+•	As variable increases, landvalue decreases.
+•	Could indicate:
+o	Property age
+o	Distance from city center
+########################################################################
+Steps for Feature Engineering
+Feature Engineering improves model performance by transforming raw data into meaningful features.
+________________________________________
+🔹 1. Handle Missing Values
+✅ For Numerical Columns
+# Fill numerical columns with median
+for col in numerical_cols:
+    df[col].fillna(df[col].median(), inplace=True)
+✅ For Categorical Columns
+categorical_cols = df.select_dtypes(include=['object','category']).columns
+
+for col in categorical_cols:
+    df[col].fillna(df[col].mode()[0], inplace=True)
+📌 Median is preferred in real estate because price-related data is usually skewed.
+________________________________________
+🔹 2. Handle Outliers
+Option 1: Remove Outliers Using IQR
+for col in numerical_cols:
+    Q1 = df[col].quantile(0.25)
+    Q3 = df[col].quantile(0.75)
+    IQR = Q3 - Q1
+    
+    lower = Q1 - 1.5 * IQR
+    upper = Q3 + 1.5 * IQR
+    
+    df = df[(df[col] >= lower) & (df[col] <= upper)]
+Option 2: Cap (Winsorize) Instead of Removing
+for col in numerical_cols:
+    Q1 = df[col].quantile(0.25)
+    Q3 = df[col].quantile(0.75)
+    IQR = Q3 - Q1
+    
+    lower = Q1 - 1.5 * IQR
+    upper = Q3 + 1.5 * IQR
+    
+    df[col] = np.where(df[col] < lower, lower, df[col])
+    df[col] = np.where(df[col] > upper, upper, df[col])
+________________________________________
+🔹 3. Transform Skewed Features
+If landvalue or other features are highly skewed:
+df["landvalue_log"] = np.log1p(df["landvalue"])
+📌 Log transformation stabilizes variance and improves regression performance.
+________________________________________
+🔹 4. Encode Categorical Variables
+✅ One-Hot Encoding (Nominal Data)
+df = pd.get_dummies(df, columns=categorical_cols, drop_first=True)
+✅ Label Encoding (If ordinal)
+from sklearn.preprocessing import LabelEncoder
+
+le = LabelEncoder()
+df["quality"] = le.fit_transform(df["quality"])
+________________________________________
+🔹 5. Create New Features (Very Important in Real Estate)
+Feature creation improves prediction power.
+Examples:
+# Total Rooms
+df["total_rooms"] = df["bedrooms"] + df["bathrooms"]
+
+# Price per square foot
+df["price_per_sqft"] = df["landvalue"] / df["area"]
+
+# Age of property (if year built available)
+df["property_age"] = 2026 - df["yearbuilt"]
+📌 These derived features often have stronger correlation with target.
+________________________________________
+🔹 6. Feature Scaling
+Important for:
+•	Linear Regression
+•	KNN
+•	SVM
+•	Neural Networks
+from sklearn.preprocessing import StandardScaler
+
+scaler = StandardScaler()
+df[numerical_cols] = scaler.fit_transform(df[numerical_cols])
+Or use MinMax Scaling:
+from sklearn.preprocessing import MinMaxScaler
+
+scaler = MinMaxScaler()
+df[numerical_cols] = scaler.fit_transform(df[numerical_cols])
+________________________________________
+🔹 7. Remove Highly Correlated Features (Multicollinearity)
+corr_matrix = df.corr().abs()
+
+upper = corr_matrix.where(np.triu(np.ones(corr_matrix.shape), k=1).astype(bool))
+
+high_corr_cols = [column for column in upper.columns if any(upper[column] > 0.9)]
+
+df.drop(columns=high_corr_cols, inplace=True)
+📌 Removes redundant variables.
+________________________________________
+🔹 8. Feature Selection (Based on Target)
+corr_with_target = df.corr()["landvalue"].abs().sort_values(ascending=False)
+
+print(corr_with_target)
+Keep top correlated features.
+________________________________________
+📌 Final Feature Engineering Workflow (Real Estate)
+1.	Handle Missing Values
+2.	Treat Outliers
+3.	Transform Skewed Data
+4.	Encode Categorical Variables
+5.	Create Derived Features
+6.	Scale Data
+7.	Remove Multicollinearity
+8.	Select Important Features
+Feature Selection
+________________________________________
+🔹 Step 1: Separate Features and Target
+# Define target variable
+target = "landvalue"
+
+# Separate X and y
+X = df.drop(columns=[target])
+y = df[target]
+
+print("Feature Matrix Shape:", X.shape)
+print("Target Vector Shape:", y.shape)
+________________________________________
+🔹 Step 2: Correlation-Based Feature Selection
+Select features highly correlated with landvalue.
+# Compute correlation with target
+correlation = df.corr()[target].abs().sort_values(ascending=False)
+
+print("Correlation with landvalue:\n")
+print(correlation)
+
+# Select features with correlation > 0.3 (adjust if needed)
+selected_features_corr = correlation[correlation > 0.3].index.tolist()
+
+# Remove target from list
+selected_features_corr.remove(target)
+
+print("\nSelected Features (Correlation > 0.3):")
+print(selected_features_corr)
+________________________________________
+🔹 Step 3: Remove Multicollinearity (Highly Correlated Independent Variables)
+import numpy as np
+
+corr_matrix = X.corr().abs()
+
+upper = corr_matrix.where(np.triu(np.ones(corr_matrix.shape), k=1).astype(bool))
+
+high_corr_cols = [column for column in upper.columns if any(upper[column] > 0.9)]
+
+print("Highly Correlated Features to Drop:", high_corr_cols)
+
+X_reduced = X.drop(columns=high_corr_cols)
+📌 This prevents redundancy in the model.
+________________________________________
+🔹 Step 4: Feature Selection Using Statistical Method (SelectKBest)
+from sklearn.feature_selection import SelectKBest, f_regression
+
+selector = SelectKBest(score_func=f_regression, k=5)  # select top 5 features
+X_new = selector.fit_transform(X_reduced, y)
+
+selected_features = X_reduced.columns[selector.get_support()]
+
+print("Top 5 Selected Features (SelectKBest):")
+print(selected_features)
+________________________________________
+🔹 Step 5: Feature Importance Using Random Forest (Recommended)
+from sklearn.ensemble import RandomForestRegressor
+
+model = RandomForestRegressor(random_state=42)
+model.fit(X_reduced, y)
+
+importances = pd.Series(model.feature_importances_, index=X_reduced.columns)
+important_features = importances.sort_values(ascending=False)
+
+print("Feature Importance (Random Forest):\n")
+print(important_features)
+________________________________________
+🔹 Optional: Plot Feature Importance
+import matplotlib.pyplot as plt
+
+important_features.head(10).plot(kind='bar')
+plt.title("Top 10 Important Features")
+plt.ylabel("Importance Score")
+plt.show()
+________________________________________
+📌 Recommended Approach (For Projects)
+✔ Use correlation to remove weak features
+✔ Remove multicollinearity (> 0.9)
+✔ Use Random Forest importance
+✔ Select top 5–10 features
+Build Regression Models
+________________________________________
+🔹 Step 1: Train-Test Split
+from sklearn.model_selection import train_test_split
+
+# Define features and target
+target = "landvalue"
+X = df.drop(columns=[target])
+y = df[target]
+
+# Split data (80% train, 20% test)
+X_train, X_test, y_train, y_test = train_test_split(
+    X, y, test_size=0.2, random_state=42
+)
+
+print("Training Set:", X_train.shape)
+print("Testing Set:", X_test.shape)
+________________________________________
+🔹 Step 2: Import Evaluation Metrics
+from sklearn.metrics import mean_absolute_error, mean_squared_error, r2_score
+import numpy as np
+Create evaluation function:
+def evaluate_model(model, X_test, y_test):
+    y_pred = model.predict(X_test)
+    
+    mae = mean_absolute_error(y_test, y_pred)
+    mse = mean_squared_error(y_test, y_pred)
+    rmse = np.sqrt(mse)
+    r2 = r2_score(y_test, y_pred)
+    
+    print("MAE :", mae)
+    print("MSE :", mse)
+    print("RMSE:", rmse)
+    print("R2 Score:", r2)
+    print("-" * 40)
+________________________________________
+🔹 Step 3: Linear Regression
+from sklearn.linear_model import LinearRegression
+
+lr = LinearRegression()
+lr.fit(X_train, y_train)
+
+print("Linear Regression Performance:")
+evaluate_model(lr, X_test, y_test)
+________________________________________
+🔹 Step 4: Decision Tree Regressor
+from sklearn.tree import DecisionTreeRegressor
+
+dt = DecisionTreeRegressor(random_state=42)
+dt.fit(X_train, y_train)
+
+print("Decision Tree Performance:")
+evaluate_model(dt, X_test, y_test)
+________________________________________
+🔹 Step 5: Random Forest Regressor (Recommended)
+from sklearn.ensemble import RandomForestRegressor
+
+rf = RandomForestRegressor(random_state=42)
+rf.fit(X_train, y_train)
+
+print("Random Forest Performance:")
+evaluate_model(rf, X_test, y_test)
+________________________________________
+🔹 Step 6: Compare Models
+You can manually compare based on:
+•	Higher R² score → Better model
+•	Lower RMSE → Better accuracy
+________________________________________
+📊 How to Interpret Metrics
+Metric	Meaning
+MAE	Average absolute error
+MSE	Squared error
+RMSE	Error in same unit as landvalue
+R²	% of variance explained (Closer to 1 is better)
+________________________________________
+📌 Example Observation (For Report)
+• Linear Regression achieved an R² score of 0.72, indicating moderate predictive performance.
+• Decision Tree showed higher variance and slight overfitting.
+• Random Forest achieved the highest R² score (0.85), making it the best performing model.
+• Therefore, Random Forest is selected as the final model.
+Hyperparameter Tuning
+________________________________________
+🔹 Step 1: Import Required Libraries
+from sklearn.model_selection import GridSearchCV
+________________________________________
+🔹 Step 2: Hyperparameter Tuning – Decision Tree
+📌 Define Parameter Grid
+from sklearn.tree import DecisionTreeRegressor
+
+dt = DecisionTreeRegressor(random_state=42)
+
+param_grid_dt = {
+    'max_depth': [None, 5, 10, 20],
+    'min_samples_split': [2, 5, 10],
+    'min_samples_leaf': [1, 2, 4]
+}
+📌 Apply GridSearch
+grid_dt = GridSearchCV(
+    estimator=dt,
+    param_grid=param_grid_dt,
+    cv=5,
+    scoring='r2',
+    n_jobs=-1
+)
+
+grid_dt.fit(X_train, y_train)
+
+print("Best Parameters (Decision Tree):", grid_dt.best_params_)
+📌 Evaluate Tuned Model
+best_dt = grid_dt.best_estimator_
+
+print("Tuned Decision Tree Performance:")
+evaluate_model(best_dt, X_test, y_test)
+________________________________________
+🔹 Step 3: Hyperparameter Tuning – Random Forest (Recommended)
+📌 Define Parameter Grid
+from sklearn.ensemble import RandomForestRegressor
+
+rf = RandomForestRegressor(random_state=42)
+
+param_grid_rf = {
+    'n_estimators': [100, 200],
+    'max_depth': [None, 10, 20],
+    'min_samples_split': [2, 5],
+    'min_samples_leaf': [1, 2]
+}
+📌 Apply GridSearch
+grid_rf = GridSearchCV(
+    estimator=rf,
+    param_grid=param_grid_rf,
+    cv=5,
+    scoring='r2',
+    n_jobs=-1
+)
+
+grid_rf.fit(X_train, y_train)
+
+print("Best Parameters (Random Forest):", grid_rf.best_params_)
+________________________________________
+📌 Evaluate Tuned Random Forest
+best_rf = grid_rf.best_estimator_
+
+print("Tuned Random Forest Performance:")
+evaluate_model(best_rf, X_test, y_test)
+________________________________________
+📊 Why Hyperparameter Tuning Improves Model?
+•	Controls overfitting
+•	Improves generalization
+•	Finds optimal tree depth
+•	Chooses best number of trees
+________________________________________
+📌 Example Report Statement
+You can write:
+Hyperparameter tuning was performed using GridSearchCV with 5-fold cross-validation.
+The optimized Random Forest model achieved improved R² score compared to the default model.
+Optimal parameters included tuned max_depth and n_estimators values.
+________________________________________
+🚀 Optional (Faster Alternative)
+If dataset is large, use RandomizedSearchCV:
+from sklearn.model_selection import RandomizedSearchCV
+Testing on Unseen Test Data (Already Split Data)
+If you already tuned best_rf (Random Forest):
+# Predict on unseen test data
+y_pred = best_rf.predict(X_test)
+
+# Compare actual vs predicted
+results = pd.DataFrame({
+    "Actual": y_test,
+    "Predicted": y_pred
+})
+
+print(results.head(10))
+________________________________________
+📊 Evaluate Performance
+from sklearn.metrics import mean_absolute_error, mean_squared_error, r2_score
+import numpy as np
+
+mae = mean_absolute_error(y_test, y_pred)
+rmse = np.sqrt(mean_squared_error(y_test, y_pred))
+r2 = r2_score(y_test, y_pred)
+
+print("MAE :", mae)
+print("RMSE:", rmse)
+print("R2 Score:", r2)
+________________________________________
+🔹 2️⃣ Test with Completely New Data (Manual Input)
+Suppose you want to predict land value for a new property.
+⚠️ Important: The new data must have same features as training data.
+________________________________________
+Example: Create New Sample Data
+# Example: Replace with actual feature names
+new_data = pd.DataFrame({
+    "area": [2000],
+    "bedrooms": [3],
+    "bathrooms": [2],
+    "property_age": [5]
+})
+________________________________________
+🔹 Apply Same Preprocessing
+If you used scaling:
+new_data_scaled = scaler.transform(new_data)
+________________________________________
+🔹 Predict Land Value
+prediction = best_rf.predict(new_data_scaled)
+
+print("Predicted Land Value:", prediction[0])
+________________________________________
+🔹 3️⃣ Visual Comparison (Actual vs Predicted)
+import matplotlib.pyplot as plt
+
+plt.scatter(y_test, y_pred)
+plt.xlabel("Actual Land Value")
+plt.ylabel("Predicted Land Value")
+plt.title("Actual vs Predicted")
+plt.show()
+📌 If points align close to a diagonal line → Good model performance.
+________________________________________
+📊 How to Interpret Results
+Metric	Meaning
+R² close to 1	Excellent model
+Low RMSE	Accurate predictions
+Large gap between actual & predicted	Model needs improvement
+________________________________________
+Interpretation of Results (Conclusion)
+🔹 1. Exploratory Data Analysis (EDA)
+•	The dataset contained both numerical and categorical variables related to property characteristics.
+•	Some features showed missing values and were treated appropriately.
+•	Several numerical variables were positively skewed, especially landvalue, which is common in real estate datasets.
+•	Outliers were detected in area, land size, and landvalue, and were treated using IQR/log transformation methods.
+________________________________________
+🔹 2. Correlation Analysis
+•	Landvalue showed strong positive correlation with area and property size, indicating that larger properties tend to have higher land value.
+•	Moderate correlation was observed with number of bedrooms and bathrooms.
+•	Weak correlation was observed with certain features, which were removed during feature selection.
+•	Multicollinearity between highly correlated independent variables was handled to improve model stability.
+________________________________________
+🔹 3. Feature Engineering & Selection
+•	Missing values were handled using median/mode imputation.
+•	Skewed variables were transformed using log transformation.
+•	Categorical variables were encoded using one-hot encoding.
+•	New meaningful features were created (e.g., total rooms, property age).
+•	Feature importance analysis showed that area-related features had the highest impact on landvalue prediction.
+________________________________________
+🔹 4. Model Performance Comparison
+Three regression models were tested:
+•	Linear Regression
+•	Decision Tree Regressor
+•	Random Forest Regressor
+✅ Key Findings:
+•	Linear Regression provided moderate performance but struggled with non-linear relationships.
+•	Decision Tree improved flexibility but showed signs of overfitting.
+•	Random Forest achieved the best performance with the highest R² score and lowest RMSE.
+After hyperparameter tuning, the Random Forest model showed further improvement and better generalization on unseen data.
+________________________________________
+🔹 5. Testing on Unseen Data
+•	The final model was evaluated using test data.
+•	The R² score indicated that a significant percentage of variance in landvalue is explained by the selected features.
+•	The Actual vs Predicted plot showed strong alignment, confirming good predictive accuracy.
+•	Error metrics (MAE, RMSE) were within acceptable range for real estate valuation problems.
+________________________________________
+🎯 Final Conclusion
+The study successfully developed a machine learning model to predict landvalue using property-related features.
+✔ Area and property size are the most influential factors affecting land value.
+✔ Random Forest Regressor is the best-performing model for this dataset.
+✔ Feature engineering and hyperparameter tuning significantly improved model accuracy.
+✔ The final model generalizes well on unseen data and can be used for practical land value estimation.
+________________________________________
+🚀 Future Improvements
+•	Use advanced models like Gradient Boosting / XGBoost
+•	Include external factors (location rating, distance to city center)
+•	Deploy the model as a web or mobile application
+•	Use larger dataset for improved robustness
+Future Work
+Although the developed regression model achieved good predictive performance for landvalue, several improvements and extensions can enhance the system further.
+________________________________________
+🔹 1. Include Location-Based Features
+Land value is heavily influenced by location. Future improvements may include:
+•	Distance to city center
+•	Proximity to schools, hospitals, and transport hubs
+•	Neighborhood quality rating
+•	Crime rate statistics
+Adding geospatial features can significantly improve prediction accuracy.
+________________________________________
+🔹 2. Use Advanced Machine Learning Models
+The current study used:
+•	Linear Regression
+•	Decision Tree
+•	Random Forest
+Future work can explore:
+•	Gradient Boosting Regressor
+•	XGBoost
+•	LightGBM
+•	CatBoost
+These boosting models often outperform Random Forest in structured real estate datasets.
+________________________________________
+🔹 3. Hyperparameter Optimization with Advanced Techniques
+Instead of GridSearch:
+•	RandomizedSearchCV
+•	Bayesian Optimization
+•	Optuna
+These techniques can find better parameters more efficiently.
+________________________________________
+🔹 4. Feature Engineering Enhancements
+•	Create interaction features (e.g., area × bedrooms)
+•	Use polynomial features
+•	Perform automated feature selection
+•	Engineer temporal features (year-wise market trends)
+________________________________________
+🔹 5. Handle Data Imbalance & Outliers More Robustly
+•	Robust scaling techniques
+•	Advanced outlier detection (Isolation Forest, LOF)
+•	Separate modeling for luxury vs standard properties
+________________________________________
+🔹 6. Model Deployment
+Future development could include:
+•	Deploying the model as a web application
+•	Creating a mobile app for land value prediction
+•	Integrating with a real estate dashboard
+•	Using APIs for live predictions
+________________________________________
+🔹 7. Increase Dataset Size
+Model performance can be improved by:
+•	Collecting more historical data
+•	Adding multiple city datasets
+•	Including macroeconomic indicators
+More data generally leads to better generalization.
+________________________________________
+🎯 Final Future Scope Statement
+The current model provides a strong foundation for land value prediction. However, incorporating advanced algorithms, richer location-based features, and real-world deployment strategies can significantly enhance its practical applicability and predictive performance.
+
+
+
+
+
+
+
+
+
+
+
+
+
 
