@@ -66,7 +66,23 @@ First 5 Rows of Dataset:
 
 [5 rows x 63 columns]
 
-2.	Understanding the Data
+2. Understanding the Data
+
+# Shape of dataset
+print("\nShape of Dataset (Rows, Columns):")
+print(df.shape)
+
+# Column names
+print("\nColumn Names:")
+print(df.columns)
+
+# Dataset information
+print("\nDataset Info:")
+print(df.info())
+
+# Random sample
+print("\nRandom Sample of Data:")
+print(df.sample(5))
 
 Shape of Dataset (Rows, Columns):
 (5000, 63)
